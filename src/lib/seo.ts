@@ -1,78 +1,74 @@
 import type { Metadata } from 'next';
-import { SITE } from './data';
-import { getDict, localeUrl, type Locale } from './i18n';
-
-// hreflang map rendered on every page — all variants point at each other and
-// x-default falls back to the English root.
-const LANGUAGES = {
-  en: `${SITE.url}/`,
-  uz: `${SITE.url}/uz`,
-  ru: `${SITE.url}/ru`,
-  'x-default': `${SITE.url}/`,
-};
+import { getContent } from './content';
+import { localeUrl, type Locale } from './i18n';
 
 const KEYWORDS = [
-  'Sunnatbek Yusupov',
-  'Sunnatbek Yusupov Aidevix',
-  'Aidevix founder',
-  'Aidevix CEO',
-  'Frontend Engineer Uzbekistan',
-  'AI Integration Specialist',
-  'Prompt Engineering expert Uzbekistan',
+  'Kamron Fazilov',
+  'Kamron Fazilov portfolio',
+  'Kamron Fazilov CV',
+  'Frontend developer Tashkent',
   'React developer Tashkent',
-  'Next.js developer',
-  'Frontend Team Lead',
-  'MARS IT School Best Teacher',
-  'Sunnatbek Yusupov CV',
-  'Sunnatbek Yusupov portfolio',
-  'Суннатбек Юсупов',
-  'Суннатбек Юсупов Aidevix',
-  'Sunnatbek Yusupov dasturchi',
-  'Sunnatbek Yusupov Oʻzbekiston',
+  'Next.js developer Uzbekistan',
+  'Web developer Uzbekistan',
+  'Landing page development Tashkent',
+  'Online store development Tashkent',
+  'Камрон Фазилов',
+  'Камрон Фазилов фронтенд разработчик',
+  'фронтенд разработчик Ташкент',
+  'разработка сайтов Ташкент',
+  'Kamron Fazilov dasturchi',
+  'frontend dasturchi Toshkent',
 ];
 
-export function buildMetadata(locale: Locale): Metadata {
-  const dict = getDict(locale);
-  const url = localeUrl(locale);
-  const others = (['en_US', 'uz_UZ', 'ru_RU'] as const).filter((l) => l !== dict.meta.ogLocale);
+export async function buildMetadata(locale: Locale): Promise<Metadata> {
+  const { site, ui } = await getContent(locale);
+  const url = localeUrl(locale, site.url);
+  const others = (['en_US', 'uz_UZ', 'ru_RU'] as const).filter((l) => l !== ui.meta.ogLocale);
+
+  // hreflang-карта на каждой странице — все варианты ссылаются друг на друга,
+  // x-default ведёт на английский корень.
+  const languages = {
+    en: `${site.url}/`,
+    uz: `${site.url}/uz`,
+    ru: `${site.url}/ru`,
+    'x-default': `${site.url}/`,
+  };
 
   return {
-    metadataBase: new URL(SITE.url),
+    metadataBase: new URL(site.url),
     title: {
-      default: dict.meta.title,
-      template: `%s | ${SITE.name}`,
+      default: ui.meta.title,
+      template: `%s | ${site.name}`,
     },
-    description: dict.meta.description,
-    applicationName: `${SITE.name} — Portfolio`,
-    authors: [{ name: SITE.name, url: SITE.url }],
-    creator: SITE.name,
-    publisher: SITE.name,
+    description: ui.meta.description,
+    applicationName: `${site.name} — Portfolio`,
+    authors: [{ name: site.name, url: site.url }],
+    creator: site.name,
+    publisher: site.name,
     keywords: KEYWORDS,
     alternates: {
       canonical: url,
-      languages: LANGUAGES,
+      languages,
     },
     openGraph: {
-      // og:image is injected automatically from app/opengraph-image.tsx
+      // og:image подставляется автоматически из app/opengraph-image.tsx
       type: 'profile',
       url,
-      siteName: SITE.name,
-      title: dict.meta.title,
-      description: dict.meta.description,
-      firstName: SITE.firstName,
-      lastName: SITE.lastName,
-      locale: dict.meta.ogLocale,
+      siteName: site.name,
+      title: ui.meta.title,
+      description: ui.meta.description,
+      firstName: site.firstName,
+      lastName: site.lastName,
+      locale: ui.meta.ogLocale,
       alternateLocale: [...others],
     },
     twitter: {
       card: 'summary_large_image',
-      title: dict.meta.title,
-      description: dict.meta.description,
+      title: ui.meta.title,
+      description: ui.meta.description,
     },
-    verification: {
-      google: 'vug4DeupYoJ3V1zIEKH59ltdfWWyKMqSwCktgXp2kB0',
-      yandex: '8b301af7a14e4521',
-    },
+    // TODO: вставьте свои коды подтверждения, когда добавите сайт в
+    // Google Search Console и Яндекс.Вебмастер.
     robots: {
       index: true,
       follow: true,
@@ -86,10 +82,11 @@ export function buildMetadata(locale: Locale): Metadata {
     },
     icons: {
       icon: [
-        // .ico fallback for legacy crawlers and Yandex SERP favicons.
+        // .ico как запасной вариант для старых краулеров и фавиконов Яндекса.
         { url: '/favicon.ico', sizes: '32x32' },
         { url: '/favicon.svg', type: 'image/svg+xml' },
       ],
     },
+    manifest: '/manifest.webmanifest',
   };
 }

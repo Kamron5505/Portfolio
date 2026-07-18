@@ -1,17 +1,22 @@
 import { FiMail, FiArrowUpRight, FiDownload } from 'react-icons/fi';
-import { SITE, SOCIALS } from '@/lib/data';
-import { getDict, type Locale } from '@/lib/i18n';
+import type { SiteInfo, SocialItem, UiText } from '@/lib/content';
 import SocialIcon from './SocialIcon';
 import SectionHeading from './SectionHeading';
 import Reveal from './Reveal';
 
-export default function Contact({ locale }: { locale: Locale }) {
-  const dict = getDict(locale);
-
+export default function Contact({
+  site,
+  ui,
+  socials,
+}: {
+  site: SiteInfo;
+  ui: UiText;
+  socials: SocialItem[];
+}) {
   return (
     <section id="contact" className="scroll-mt-24 py-24">
       <div className="wrap">
-        <SectionHeading index="07" eyebrow={dict.contact.eyebrow} title={dict.contact.title} />
+        <SectionHeading index="06" eyebrow={ui.contact.eyebrow} title={ui.contact.title} />
 
         <Reveal>
           <div className="card relative overflow-hidden p-8 text-center sm:p-12">
@@ -20,30 +25,30 @@ export default function Contact({ locale }: { locale: Locale }) {
               className="pointer-events-none absolute inset-x-0 -top-24 mx-auto h-48 w-48 rounded-full bg-accent/15 blur-3xl"
             />
             <div className="relative">
-              <p className="mx-auto max-w-xl text-lg leading-relaxed text-muted">
-                {dict.contact.blurb}
-              </p>
+              <p className="mx-auto max-w-xl text-lg leading-relaxed text-muted">{ui.contact.blurb}</p>
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <a
-                  href={`mailto:${SITE.email}`}
+                  href={`mailto:${site.email}`}
                   className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 font-medium text-white transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/30"
                 >
-                  <FiMail aria-hidden="true" /> {SITE.email}
+                  <FiMail aria-hidden="true" /> {site.email}
                 </a>
-                <a
-                  href={SITE.cv}
-                  download
-                  className="inline-flex items-center gap-2 rounded-lg border border-line bg-surface-2/60 px-6 py-3.5 font-medium text-ink transition-colors hover:border-accent-2/40 hover:bg-surface-2"
-                >
-                  <FiDownload aria-hidden="true" /> {dict.contact.downloadCv}
-                </a>
+                {site.cv && (
+                  <a
+                    href={site.cv}
+                    download
+                    className="inline-flex items-center gap-2 rounded-lg border border-line bg-surface-2/60 px-6 py-3.5 font-medium text-ink transition-colors hover:border-accent-2/40 hover:bg-surface-2"
+                  >
+                    <FiDownload aria-hidden="true" /> {ui.contact.downloadCv}
+                  </a>
+                )}
               </div>
 
               <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-                {SOCIALS.map((s) => (
+                {socials.map((s) => (
                   <a
-                    key={s.label}
+                    key={s.id}
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"

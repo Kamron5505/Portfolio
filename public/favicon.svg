@@ -7,5 +7,10 @@
   </defs>
   <rect width="64" height="64" rx="14" fill="#08080C"/>
   <rect x="1.5" y="1.5" width="61" height="61" rx="12.5" fill="none" stroke="url(#g)" stroke-width="2"/>
-  <text x="32" y="43" font-family="'Space Grotesk',system-ui,sans-serif" font-size="30" font-weight="700" fill="url(#g)" text-anchor="middle">SY</text>
+  <!-- "KF" as vector paths, not <text>: a favicon is rendered without the site's
+       webfont, so glyphs would fall back to an arbitrary system serif. -->
+  <g fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 20 V44 M17 32.5 L28 20 M17 32.5 L28 44"/>
+    <path d="M37 44 V20 H48 M37 31.5 H45"/>
+  </g>
 </svg>

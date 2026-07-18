@@ -1,22 +1,19 @@
-import { SKILLS } from '@/lib/data';
-import { getDict, type Locale } from '@/lib/i18n';
+import type { SkillGroupItem, UiText } from '@/lib/content';
 import SectionHeading from './SectionHeading';
 import Reveal from './Reveal';
 
-export default function Skills({ locale }: { locale: Locale }) {
-  const dict = getDict(locale);
-
+export default function Skills({ ui, skills }: { ui: UiText; skills: SkillGroupItem[] }) {
   return (
     <section id="skills" className="scroll-mt-24 py-24">
       <div className="wrap">
-        <SectionHeading index="05" eyebrow={dict.skills.eyebrow} title={dict.skills.title} />
+        <SectionHeading index="03" eyebrow={ui.skills.eyebrow} title={ui.skills.title} />
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {SKILLS.map((group, i) => (
-            <Reveal key={group.title} delay={i * 0.06}>
+          {skills.map((group, i) => (
+            <Reveal key={group.id} delay={i * 0.06}>
               <div className="card h-full p-6">
                 <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-accent">
-                  {dict.skills.groupTitles[i]}
+                  {group.title}
                 </h3>
                 <ul className="flex flex-wrap gap-2">
                   {group.items.map((item) => (

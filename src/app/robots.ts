@@ -1,13 +1,17 @@
 import type { MetadataRoute } from 'next';
-import { SITE } from '@/lib/data';
+import { getContent } from '@/lib/content';
 
-export default function robots(): MetadataRoute.Robots {
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const { site } = await getContent('en');
+
   return {
     rules: {
       userAgent: '*',
       allow: '/',
+      // Админку и её API индексировать незачем.
+      disallow: ['/admin', '/api/'],
     },
-    sitemap: [`${SITE.url}/sitemap.xml`, `${SITE.url}/image-sitemap.xml`],
-    host: SITE.url,
+    sitemap: [`${site.url}/sitemap.xml`],
+    host: site.url,
   };
 }

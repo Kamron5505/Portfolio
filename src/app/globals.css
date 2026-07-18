@@ -12,7 +12,8 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    /* Плавный скролл по якорям делает GSAP ScrollToPlugin (GsapEffects) —
+       CSS scroll-behavior конфликтовал бы с ним, анимируя каждый кадр. */
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -75,26 +76,16 @@
     mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
   }
 
-  /* Scroll-reveal (see components/Reveal.tsx) — CSS only, no JS animation lib. */
-  .reveal {
-    transition:
-      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity, transform;
-  }
-
-  /* Hide-before-reveal only when JS can run — no-JS UAs (and old browsers
-     without `scripting` support) see the content immediately. */
-  @media (scripting: enabled) {
-    .reveal {
+  /* Анимируемые GSAP-ом элементы (GsapEffects.tsx) прячем до старта интро,
+     чтобы SSR-контент не мигал. Только при работающем JS и без reduced
+     motion — no-JS UA и любители спокойствия видят контент сразу. GSAP
+     перекрывает это inline-стилями. */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    [data-hero-title],
+    [data-hero-item],
+    [data-reveal] {
       opacity: 0;
-      transform: translateY(18px);
     }
-  }
-
-  .reveal-visible {
-    opacity: 1;
-    transform: none;
   }
 }
 
@@ -106,9 +97,6 @@
     scroll-behavior: auto !important;
   }
 
-  /* Never leave reveal content hidden when motion is reduced. */
-  .reveal {
-    opacity: 1 !important;
-    transform: none !important;
-  }
+  /* GSAP-ревилы при reduced motion не запускаются вовсе (см. GsapEffects) —
+     контент из SSR-HTML остаётся видимым без дополнительных правил. */
 }

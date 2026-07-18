@@ -33,3 +33,11 @@ next-env.d.ts
 
 # internal audit artifacts
 /.audit/
+
+# service worker (генерируется сборкой)
+/public/sw.js
+/public/sw.js.map
+/public/swe-worker-*.js
+
+# загруженные через админку файлы (локальный режим)
+/public/uploads

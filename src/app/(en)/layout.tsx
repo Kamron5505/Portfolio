@@ -2,7 +2,9 @@ import type { Metadata, Viewport } from 'next';
 import RootDocument from '@/components/RootDocument';
 import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = buildMetadata('en');
+export async function generateMetadata(): Promise<Metadata> {
+  return buildMetadata('en');
+}
 
 export const viewport: Viewport = {
   themeColor: '#08080C',

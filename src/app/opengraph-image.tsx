@@ -40,7 +40,7 @@ export default function OGImage() {
               color: '#6366F1',
             }}
           >
-            SY
+            {SITE.initials}
           </div>
           <span style={{ fontSize: 24, color: '#8A8F9A' }}>{SITE.url.replace('https://', '')}</span>
         </div>

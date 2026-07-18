@@ -1,71 +1,86 @@
 import { FiArrowUpRight, FiDownload, FiMapPin } from 'react-icons/fi';
-import { SITE, SOCIALS } from '@/lib/data';
-import { getDict, type Locale } from '@/lib/i18n';
+import type { SiteInfo, SocialItem, UiText } from '@/lib/content';
 import SocialIcon from './SocialIcon';
 import Avatar from './Avatar';
+import VoxelSphere from './VoxelSphere';
 
-export default function Hero({ locale }: { locale: Locale }) {
-  const dict = getDict(locale);
-
+export default function Hero({
+  site,
+  ui,
+  socials,
+}: {
+  site: SiteInfo;
+  ui: UiText;
+  socials: SocialItem[];
+}) {
   return (
     <section id="top" className="relative overflow-hidden pt-28 sm:pt-36">
       <div aria-hidden className="pointer-events-none absolute inset-0 grid-bg" />
 
+      {/* Ambient interactive voxel sphere behind the hero content */}
+      <VoxelSphere className="absolute left-1/2 top-1/2 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 opacity-35 sm:h-[640px] sm:w-[640px] lg:h-[760px] lg:w-[760px]" />
+
       <div className="wrap relative">
         <div className="grid items-center gap-12 lg:grid-cols-[1.4fr_0.9fr]">
-          {/* Left: intro */}
-          <div className="animate-fade-up">
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1 font-mono text-xs text-muted">
+          {/* Left: intro (появление оркестрирует GsapEffects) */}
+          <div>
+            <p
+              data-hero-item
+              className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1 font-mono text-xs text-muted"
+            >
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-2 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-2" />
               </span>
-              {dict.hero.available}
+              {ui.hero.available}
             </p>
 
-            <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-              {SITE.name}
+            <h1
+              data-hero-title
+              className="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl"
+            >
+              {site.name}
             </h1>
 
-            <p className="mt-4 font-mono text-base text-accent sm:text-lg">
-              {dict.role} <span className="text-faint">·</span> {dict.subRole}
+            <p data-hero-item className="mt-4 font-mono text-base text-accent sm:text-lg">
+              {ui.role} <span className="text-faint">·</span> {ui.subRole}
             </p>
 
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
-              {dict.tagline} {dict.hero.intro}
+            <p data-hero-item className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
+              {ui.tagline} {ui.hero.intro}
             </p>
 
-            <div className="mt-7 flex items-center gap-2 font-mono text-sm text-faint">
-              <FiMapPin size={15} aria-hidden="true" /> {dict.location}
+            <div data-hero-item className="mt-7 flex items-center gap-2 font-mono text-sm text-faint">
+              <FiMapPin size={15} aria-hidden="true" /> {ui.location}
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div data-hero-item className="mt-8 flex flex-wrap items-center gap-3">
               <a
                 href="#contact"
                 className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 font-medium text-white transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/30"
               >
-                {dict.hero.getInTouch} <FiArrowUpRight aria-hidden="true" />
+                {ui.hero.getInTouch} <FiArrowUpRight aria-hidden="true" />
               </a>
               <a
-                href="https://aidevix.uz"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#projects"
                 className="inline-flex items-center gap-2 rounded-lg border border-line bg-surface/60 px-5 py-3 font-medium text-ink transition-colors hover:border-accent/40 hover:bg-surface-2"
               >
-                {dict.hero.visitAidevix} <FiArrowUpRight aria-hidden="true" />
+                {ui.hero.viewWork} <FiArrowUpRight aria-hidden="true" />
               </a>
-              <a
-                href={SITE.cv}
-                download
-                className="inline-flex items-center gap-2 rounded-lg border border-line bg-surface/60 px-5 py-3 font-medium text-ink transition-colors hover:border-accent-2/40 hover:bg-surface-2"
-              >
-                {dict.hero.downloadCv} <FiDownload size={16} aria-hidden="true" />
-              </a>
+              {site.cv && (
+                <a
+                  href={site.cv}
+                  download
+                  className="inline-flex items-center gap-2 rounded-lg border border-line bg-surface/60 px-5 py-3 font-medium text-ink transition-colors hover:border-accent-2/40 hover:bg-surface-2"
+                >
+                  {ui.hero.downloadCv} <FiDownload size={16} aria-hidden="true" />
+                </a>
+              )}
             </div>
 
-            <ul className="mt-8 flex flex-wrap items-center gap-3">
-              {SOCIALS.map((s) => (
-                <li key={s.label}>
+            <ul data-hero-item className="mt-8 flex flex-wrap items-center gap-3">
+              {socials.map((s) => (
+                <li key={s.id}>
                   <a
                     href={s.url}
                     target="_blank"
@@ -81,16 +96,18 @@ export default function Hero({ locale }: { locale: Locale }) {
           </div>
 
           {/* Right: avatar with terminal frame + initials fallback */}
-          <div className="relative mx-auto w-full max-w-[320px] animate-fade-up lg:mx-0" style={{ animationDelay: '0.1s' }}>
+          <div data-hero-item className="relative mx-auto w-full max-w-[320px] lg:mx-0">
             <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-accent/25 via-transparent to-accent-2/20 blur-2xl" />
             <div className="card overflow-hidden p-2">
               <div className="flex items-center gap-1.5 px-2 py-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
                 <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
                 <span className="h-2.5 w-2.5 rounded-full bg-green-500/70" />
-                <span className="ml-2 font-mono text-[11px] text-faint">sunnatbek.jpg</span>
+                <span className="ml-2 font-mono text-[11px] text-faint">
+                  {site.firstName.toLowerCase()}.jpg
+                </span>
               </div>
-              <Avatar src={SITE.avatar} alt={`${SITE.name} — ${dict.role}`} />
+              <Avatar src={site.avatar} alt={`${site.name} — ${ui.role}`} initials={site.initials} />
             </div>
           </div>
         </div>

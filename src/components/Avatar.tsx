@@ -4,10 +4,18 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 // Renders the portrait when a real photo exists at `src`; if that asset is
-// missing (404) or fails to load, it silently falls back to the "SY" initials
+// missing (404) or fails to load, it silently falls back to the initials
 // instead of showing a broken-image icon. This keeps the layout intact whether
-// or not the owner has dropped in public/sunnatbek-yusupov.jpg yet.
-export default function Avatar({ src, alt }: { src: string; alt: string }) {
+// or not a photo has been uploaded through the admin panel yet.
+export default function Avatar({
+  src,
+  alt,
+  initials,
+}: {
+  src: string;
+  alt: string;
+  initials: string;
+}) {
   const [failed, setFailed] = useState(false);
 
   return (
@@ -16,9 +24,9 @@ export default function Avatar({ src, alt }: { src: string; alt: string }) {
         aria-hidden="true"
         className="absolute inset-0 flex items-center justify-center font-display text-7xl font-bold text-white/10"
       >
-        SY
+        {initials}
       </span>
-      {!failed && (
+      {src && !failed && (
         <Image
           src={src}
           alt={alt}

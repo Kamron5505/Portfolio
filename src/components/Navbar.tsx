@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
-import { getDict, LOCALES, type Locale } from '@/lib/i18n';
+import InstallPWA from '@/components/InstallPWA';
+import { LOCALES, type Locale } from '@/lib/i18n';
+
+type NavItem = { label: string; href: string };
+type InstallText = { button: string; iosHint: string };
 
 const localeHref = (locale: Locale) => (locale === 'en' ? '/' : `/${locale}`);
 
@@ -27,8 +31,17 @@ function LocaleSwitcher({ current, className }: { current: Locale; className?: s
   );
 }
 
-export default function Navbar({ locale }: { locale: Locale }) {
-  const dict = getDict(locale);
+export default function Navbar({
+  locale,
+  nav,
+  cta,
+  install,
+}: {
+  locale: Locale;
+  nav: NavItem[];
+  cta: string;
+  install: InstallText;
+}) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -61,24 +74,26 @@ export default function Navbar({ locale }: { locale: Locale }) {
     >
       <nav className="wrap flex h-16 items-center justify-between" aria-label="Primary">
         <a href="#top" className="font-mono text-sm font-bold tracking-tight text-ink">
-          <span className="text-accent">~/</span>sunnatbek
+          <span className="text-accent">~/</span>kamron
           <span className="animate-blink text-accent">_</span>
         </a>
 
         <ul className="hidden items-center gap-8 md:flex">
-          {dict.nav.map((item) => (
+          {nav.map((item) => (
             <li key={item.href}>
               <a href={item.href} className="font-mono text-[13px] text-muted transition-colors hover:text-ink">
                 {item.label}
               </a>
             </li>
           ))}
-          <li>
+          <li className="flex items-center gap-6">
+            {/* Кнопка сама скрывается там, где установка невозможна или уже сделана. */}
+            <InstallPWA label={install.button} iosHint={install.iosHint} />
             <a
               href="#contact"
               className="rounded-md border border-accent/40 bg-accent/10 px-3.5 py-1.5 font-mono text-[13px] text-ink transition-colors hover:bg-accent/20"
             >
-              {dict.hero.getInTouch}
+              {cta}
             </a>
           </li>
           <li>
@@ -104,7 +119,7 @@ export default function Navbar({ locale }: { locale: Locale }) {
       {open && (
         <div id="mobile-nav" className="border-t border-line bg-bg/95 backdrop-blur-md md:hidden">
           <ul className="wrap flex flex-col gap-1 py-4">
-            {dict.nav.map((item) => (
+            {nav.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
@@ -115,6 +130,9 @@ export default function Navbar({ locale }: { locale: Locale }) {
                 </a>
               </li>
             ))}
+            <li>
+              <InstallPWA label={install.button} iosHint={install.iosHint} variant="menu" />
+            </li>
           </ul>
         </div>
       )}
