@@ -200,6 +200,16 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
     return () => clearTimeout(timer);
   }, [notice]);
 
+  // Отправка только в открытый сокет: во время (пере)подключения send()
+  // бросает InvalidStateError. Если сокет не готов — просто не отправляем;
+  // имя досылается автоматически в onopen.
+  const send = useCallback((payload: unknown) => {
+    const ws = wsRef.current;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return false;
+    ws.send(JSON.stringify(payload));
+    return true;
+  }, []);
+
   const toggle = useCallback(() => {
     setOpen((v) => {
       if (!v) setUnread(0);
@@ -213,15 +223,15 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
     if (!value) return;
     setName(value);
     localStorage.setItem(NAME_KEY, value);
-    wsRef.current?.send(JSON.stringify({ type: 'hello', name: value }));
+    send({ type: 'hello', name: value });
   };
 
   const submitMessage = (e: React.FormEvent) => {
     e.preventDefault();
     const text = draft.trim().slice(0, 500);
-    if (!text || !connected) return;
-    wsRef.current?.send(JSON.stringify({ type: 'message', text }));
-    setDraft('');
+    if (!text) return;
+    // Не удалось отправить (сокет ещё подключается) — текст остаётся в поле.
+    if (send({ type: 'message', text })) setDraft('');
   };
 
   const time = (ts: number) =>
