@@ -6,10 +6,8 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   // PGlite (встроенная локальная БД) тянет WASM-бинарь — его нельзя бандлить,
-  // пакет должен грузиться из node_modules как есть. ws (сервер живого чата)
-  // при бандлинге теряет свои опциональные нативные модули
-  // («bufferUtil.unmask is not a function»), поэтому тоже остаётся внешним.
-  serverExternalPackages: ['@electric-sql/pglite', 'ws'],
+  // пакет должен грузиться из node_modules как есть.
+  serverExternalPackages: ['@electric-sql/pglite'],
   experimental: {
     // Загрузки через Server Actions по умолчанию режутся на 1 МБ — мало даже для
     // фото. На своём сервере это снимает потолок; на Vercel всё равно действует

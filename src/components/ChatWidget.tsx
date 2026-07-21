@@ -5,12 +5,14 @@ import { FiMessageCircle, FiSend, FiX } from 'react-icons/fi';
 import type { Locale } from '@/lib/i18n';
 
 // Живой чат: плавающая кнопка в правом нижнем углу + мини-панель.
-// Общий канал: посетители видят друг друга, администратор отвечает
-// с того же виджета (сервер узнаёт его по cookie админки).
-// Серверная часть — src/server/chat-server.ts (порт CHAT_WS_PORT, деф. 3001).
+// Общий канал: посетители видят друг друга, администратор отвечает с того же
+// виджета (сервер узнаёт его по cookie админки). Транспорт — опрос
+// /api/chat раз в несколько секунд: WebSocket на Vercel (serverless) не
+// живёт, а для чата на портфолио задержка в пару секунд незаметна.
 
 type ChatMessage = {
   id: string;
+  seq: number;
   name: string;
   text: string;
   isAdmin: boolean;
@@ -49,7 +51,7 @@ const T: Record<
     inputPlaceholder: 'Write a message…',
     send: 'Send',
     connecting: 'Connecting…',
-    offline: 'Connection lost. Reconnecting…',
+    offline: 'Connection lost. Retrying…',
     admin: 'Admin',
     empty: 'No messages yet — say hi!',
     rateLimited: 'Too fast — wait a few seconds.',
@@ -65,7 +67,7 @@ const T: Record<
     inputPlaceholder: 'Xabar yozing…',
     send: 'Yuborish',
     connecting: 'Ulanmoqda…',
-    offline: 'Aloqa uzildi. Qayta ulanmoqda…',
+    offline: 'Aloqa uzildi. Qayta urinilmoqda…',
     admin: 'Admin',
     empty: 'Hozircha xabar yoʻq — salom deng!',
     rateLimited: 'Juda tez — bir necha soniya kuting.',
@@ -81,7 +83,7 @@ const T: Record<
     inputPlaceholder: 'Напишите сообщение…',
     send: 'Отправить',
     connecting: 'Подключение…',
-    offline: 'Связь потеряна. Переподключение…',
+    offline: 'Связь потеряна. Повторная попытка…',
     admin: 'Админ',
     empty: 'Сообщений пока нет — поздоровайтесь!',
     rateLimited: 'Слишком часто — подождите пару секунд.',
@@ -89,11 +91,19 @@ const T: Record<
 };
 
 const NAME_KEY = 'chat:name';
+const CID_KEY = 'chat:cid';
+// Пока чат открыт, опрашиваем часто; закрытый — изредка (для счётчика
+// непрочитанных), чтобы не жечь serverless-вызовы впустую.
+const POLL_OPEN_MS = 3000;
+const POLL_CLOSED_MS = 25000;
 
-function wsUrl(): string {
-  if (process.env.NEXT_PUBLIC_CHAT_WS_URL) return process.env.NEXT_PUBLIC_CHAT_WS_URL;
-  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-  return `${proto}://${location.hostname}:3001`;
+function clientId(): string {
+  let cid = localStorage.getItem(CID_KEY);
+  if (!cid) {
+    cid = crypto.randomUUID();
+    localStorage.setItem(CID_KEY, cid);
+  }
+  return cid;
 }
 
 export default function ChatWidget({ locale }: { locale: Locale }) {
@@ -101,6 +111,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
 
   const [open, setOpen] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const [online, setOnline] = useState(0);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [unread, setUnread] = useState(0);
@@ -109,85 +120,94 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
   const [nameDraft, setNameDraft] = useState('');
   const [draft, setDraft] = useState('');
   const [notice, setNotice] = useState('');
+  const [sending, setSending] = useState(false);
 
-  const wsRef = useRef<WebSocket | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const openRef = useRef(open);
   openRef.current = open;
-  const nameRef = useRef(name);
-  nameRef.current = name;
+  // Курсор «последний увиденный seq» — чтобы забирать только новое.
+  const cursorRef = useRef(0);
+  const pollingRef = useRef(false);
 
-  // Одно подключение на всё время жизни страницы, с переподключением.
-  useEffect(() => {
-    let disposed = false;
-    let attempts = 0;
-    let timer: ReturnType<typeof setTimeout>;
-
-    const connect = () => {
-      if (disposed) return;
-      const ws = new WebSocket(wsUrl());
-      wsRef.current = ws;
-
-      ws.onopen = () => {
-        attempts = 0;
-        setConnected(true);
-        const saved = nameRef.current || localStorage.getItem(NAME_KEY) || '';
-        if (saved) ws.send(JSON.stringify({ type: 'hello', name: saved }));
-      };
-
-      ws.onmessage = (event) => {
-        let data: {
-          type?: string;
-          you?: { name: string; isAdmin: boolean };
-          online?: number;
-          messages?: ChatMessage[];
-          message?: ChatMessage;
-          code?: string;
-        };
-        try {
-          data = JSON.parse(String(event.data));
-        } catch {
-          return;
-        }
-
-        if (data.type === 'welcome' && data.you) {
-          if (data.you.isAdmin) {
-            // Имя админа приходит из его сессии и не редактируется.
-            setIsAdmin(true);
-            setName(data.you.name);
-          } else if (!nameRef.current) {
-            setName(localStorage.getItem(NAME_KEY) ?? '');
-          }
-          if (typeof data.online === 'number') setOnline(data.online);
-        } else if (data.type === 'history' && Array.isArray(data.messages)) {
-          setMessages(data.messages);
-        } else if (data.type === 'message' && data.message) {
-          const msg = data.message;
-          setMessages((prev) => [...prev.slice(-299), msg]);
-          if (!openRef.current) setUnread((n) => n + 1);
-        } else if (data.type === 'presence' && typeof data.online === 'number') {
-          setOnline(data.online);
-        } else if (data.type === 'error' && data.code === 'rate_limited') {
-          setNotice('rate_limited');
-        }
-      };
-
-      ws.onclose = () => {
-        setConnected(false);
-        if (disposed) return;
-        attempts += 1;
-        timer = setTimeout(connect, Math.min(15000, 1500 * attempts));
-      };
-      ws.onerror = () => ws.close();
-    };
-
-    connect();
-    return () => {
-      disposed = true;
-      clearTimeout(timer);
-      wsRef.current?.close();
-    };
+  const appendMessages = useCallback((incoming: ChatMessage[]) => {
+    if (incoming.length === 0) return;
+    setMessages((prev) => {
+      const seen = new Set(prev.map((m) => m.id));
+      const fresh = incoming.filter((m) => !seen.has(m.id));
+      if (fresh.length === 0) return prev;
+      if (!openRef.current) setUnread((n) => n + fresh.length);
+      return [...prev, ...fresh].slice(-300);
+    });
+    const maxSeq = Math.max(...incoming.map((m) => m.seq));
+    if (maxSeq > cursorRef.current) cursorRef.current = maxSeq;
   }, []);
+
+  const poll = useCallback(async () => {
+    if (pollingRef.current) return;
+    pollingRef.current = true;
+    try {
+      const res = await fetch(`/api/chat?cid=${clientId()}&after=${cursorRef.current}`, {
+        cache: 'no-store',
+      });
+      if (res.status === 503) {
+        // База не настроена — чата нет, прячем кнопку совсем.
+        setDisabled(true);
+        return;
+      }
+      if (!res.ok) throw new Error(String(res.status));
+      const data = (await res.json()) as {
+        ok: boolean;
+        you?: { isAdmin: boolean; name: string | null };
+        online?: number;
+        messages?: ChatMessage[];
+      };
+      if (!data.ok) throw new Error('not ok');
+
+      if (data.you?.isAdmin) {
+        // Имя админа приходит из его сессии и не редактируется.
+        setIsAdmin(true);
+        setName(data.you.name ?? 'admin');
+      }
+      if (typeof data.online === 'number') setOnline(data.online);
+      if (Array.isArray(data.messages)) appendMessages(data.messages);
+      setConnected(true);
+    } catch {
+      setConnected(false);
+    } finally {
+      pollingRef.current = false;
+    }
+  }, [appendMessages]);
+
+  // Цикл опроса: интервал зависит от того, открыта ли панель; в фоновой
+  // вкладке не опрашиваем вовсе.
+  useEffect(() => {
+    if (disabled) return;
+    setName((v) => v || localStorage.getItem(NAME_KEY) || '');
+
+    let timer: ReturnType<typeof setTimeout>;
+    let stopped = false;
+
+    const tick = async () => {
+      if (stopped) return;
+      if (document.visibilityState === 'visible') await poll();
+      if (stopped) return;
+      timer = setTimeout(tick, openRef.current ? POLL_OPEN_MS : POLL_CLOSED_MS);
+    };
+    tick();
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') {
+        clearTimeout(timer);
+        tick();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [poll, disabled]);
 
   // Автоскролл к последнему сообщению, пока панель открыта.
   useEffect(() => {
@@ -200,22 +220,16 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
     return () => clearTimeout(timer);
   }, [notice]);
 
-  // Отправка только в открытый сокет: во время (пере)подключения send()
-  // бросает InvalidStateError. Если сокет не готов — просто не отправляем;
-  // имя досылается автоматически в onopen.
-  const send = useCallback((payload: unknown) => {
-    const ws = wsRef.current;
-    if (!ws || ws.readyState !== WebSocket.OPEN) return false;
-    ws.send(JSON.stringify(payload));
-    return true;
-  }, []);
-
   const toggle = useCallback(() => {
     setOpen((v) => {
-      if (!v) setUnread(0);
+      if (!v) {
+        setUnread(0);
+        // Свежие сообщения сразу при открытии, не дожидаясь таймера.
+        void poll();
+      }
       return !v;
     });
-  }, []);
+  }, [poll]);
 
   const submitName = (e: React.FormEvent) => {
     e.preventDefault();
@@ -223,15 +237,34 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
     if (!value) return;
     setName(value);
     localStorage.setItem(NAME_KEY, value);
-    send({ type: 'hello', name: value });
   };
 
-  const submitMessage = (e: React.FormEvent) => {
+  const submitMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     const text = draft.trim().slice(0, 500);
-    if (!text) return;
-    // Не удалось отправить (сокет ещё подключается) — текст остаётся в поле.
-    if (send({ type: 'message', text })) setDraft('');
+    if (!text || sending) return;
+    setSending(true);
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cid: clientId(), name, text }),
+      });
+      if (res.status === 429) {
+        setNotice('rate_limited');
+        return;
+      }
+      if (!res.ok) throw new Error(String(res.status));
+      const data = (await res.json()) as { ok: boolean; message?: ChatMessage | null };
+      if (data.ok && data.message) appendMessages([data.message]);
+      setDraft('');
+      setConnected(true);
+    } catch {
+      // Сообщение не ушло — текст остаётся в поле, можно повторить.
+      setConnected(false);
+    } finally {
+      setSending(false);
+    }
   };
 
   const time = (ts: number) =>
@@ -239,6 +272,8 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
       hour: '2-digit',
       minute: '2-digit',
     });
+
+  if (disabled) return null;
 
   return (
     <>
@@ -319,7 +354,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
               {t.rateLimited}
             </p>
           )}
-          {!connected && (
+          {!connected && messages.length > 0 && (
             <p role="status" className="border-t border-line px-4 py-1.5 font-mono text-[11px] text-amber-400">
               {t.offline}
             </p>
@@ -339,7 +374,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
               <button
                 type="submit"
                 aria-label={t.send}
-                disabled={!connected || !draft.trim()}
+                disabled={sending || !draft.trim()}
                 className="rounded-lg bg-accent p-2.5 text-white transition-opacity disabled:opacity-40"
               >
                 <FiSend size={16} aria-hidden="true" />

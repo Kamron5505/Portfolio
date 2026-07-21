@@ -71,17 +71,25 @@ create table if not exists highlights (
   translations jsonb not null default '{}'::jsonb
 );
 
--- Живой чат (src/server/chat-server.ts): общий канал посетителей и админа.
--- Таблица также создаётся самим чат-сервером при старте, если её ещё нет.
+-- Живой чат (src/app/api/chat/route.ts): общий канал посетителей и админа.
+-- Таблицы также создаются самим роутом при первом запросе, если их ещё нет.
 create table if not exists chat_messages (
   id         uuid primary key,
+  seq        bigserial,                 -- курсор для выборки «что нового»
+  client_id  text,                      -- анонимный id браузера (антифлуд)
   name       text not null,
   text       text not null,
   is_admin   boolean not null default false,
   created_at timestamptz not null default now()
 );
 
-create index if not exists chat_messages_created_idx on chat_messages (created_at);
+create index if not exists chat_messages_seq_idx on chat_messages (seq);
+
+-- Кто недавно опрашивал чат — тот считается «онлайн».
+create table if not exists chat_presence (
+  client_id text primary key,
+  last_seen timestamptz not null default now()
+);
 create index if not exists highlights_sort_idx on highlights (sort);
 create index if not exists projects_sort_idx on projects (sort);
 create index if not exists services_sort_idx on services (sort);
