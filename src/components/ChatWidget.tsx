@@ -9,6 +9,11 @@ import type { Locale } from '@/lib/i18n';
 // виджета (сервер узнаёт его по cookie админки). Транспорт — опрос
 // /api/chat раз в несколько секунд: WebSocket на Vercel (serverless) не
 // живёт, а для чата на портфолио задержка в пару секунд незаметна.
+//
+// Кнопка видна всегда. Недоступность сервера — это состояние «Подключение…»,
+// а не исчезновение виджета: раньше один ответ 503 (база не настроена) гасил
+// чат до перезагрузки страницы, и со стороны это выглядело как пропавшая
+// кнопка.
 
 type ChatMessage = {
   id: string;
@@ -97,13 +102,53 @@ const CID_KEY = 'chat:cid';
 const POLL_OPEN_MS = 3000;
 const POLL_CLOSED_MS = 25000;
 
-function clientId(): string {
-  let cid = localStorage.getItem(CID_KEY);
-  if (!cid) {
-    cid = crypto.randomUUID();
-    localStorage.setItem(CID_KEY, cid);
+// localStorage бросает исключение, если хранилище заблокировано (приватный
+// режим, запрет сторонних данных). Для чата это не повод падать: без него
+// имя и id просто не переживут перезагрузку страницы.
+function readStorage(key: string): string {
+  try {
+    return localStorage.getItem(key) ?? '';
+  } catch {
+    return '';
   }
-  return cid;
+}
+
+function writeStorage(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* хранилище недоступно — работаем в пределах текущей страницы */
+  }
+}
+
+// crypto.randomUUID() существует только в secure context: https или localhost.
+// При заходе по http на IP в локальной сети (телефон, соседний ноутбук) его
+// нет, и прямой вызов ронял весь опрос чата.
+function randomId(): string {
+  const webCrypto = typeof crypto !== 'undefined' ? crypto : undefined;
+  if (typeof webCrypto?.randomUUID === 'function') return webCrypto.randomUUID();
+
+  const bytes = new Uint8Array(16);
+  if (typeof webCrypto?.getRandomValues === 'function') {
+    webCrypto.getRandomValues(bytes);
+  } else {
+    for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+  }
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Идентификатор держим ещё и в памяти модуля: при недоступном localStorage
+// иначе на каждый запрос выдавался бы новый клиент и счётчик «онлайн» врал.
+let cachedCid = '';
+
+function clientId(): string {
+  if (cachedCid) return cachedCid;
+  cachedCid = readStorage(CID_KEY);
+  if (!cachedCid) {
+    cachedCid = randomId();
+    writeStorage(CID_KEY, cachedCid);
+  }
+  return cachedCid;
 }
 
 export default function ChatWidget({ locale }: { locale: Locale }) {
@@ -111,7 +156,6 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
 
   const [open, setOpen] = useState(false);
   const [connected, setConnected] = useState(false);
-  const [disabled, setDisabled] = useState(false);
   const [online, setOnline] = useState(0);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [unread, setUnread] = useState(0);
@@ -149,11 +193,6 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
       const res = await fetch(`/api/chat?cid=${clientId()}&after=${cursorRef.current}`, {
         cache: 'no-store',
       });
-      if (res.status === 503) {
-        // База не настроена — чата нет, прячем кнопку совсем.
-        setDisabled(true);
-        return;
-      }
       if (!res.ok) throw new Error(String(res.status));
       const data = (await res.json()) as {
         ok: boolean;
@@ -181,8 +220,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
   // Цикл опроса: интервал зависит от того, открыта ли панель; в фоновой
   // вкладке не опрашиваем вовсе.
   useEffect(() => {
-    if (disabled) return;
-    setName((v) => v || localStorage.getItem(NAME_KEY) || '');
+    setName((v) => v || readStorage(NAME_KEY));
 
     let timer: ReturnType<typeof setTimeout>;
     let stopped = false;
@@ -207,7 +245,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
       clearTimeout(timer);
       document.removeEventListener('visibilitychange', onVisible);
     };
-  }, [poll, disabled]);
+  }, [poll]);
 
   // Автоскролл к последнему сообщению, пока панель открыта.
   useEffect(() => {
@@ -236,7 +274,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
     const value = nameDraft.replace(/\s+/g, ' ').trim().slice(0, 32);
     if (!value) return;
     setName(value);
-    localStorage.setItem(NAME_KEY, value);
+    writeStorage(NAME_KEY, value);
   };
 
   const submitMessage = async (e: React.FormEvent) => {
@@ -272,8 +310,6 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
       hour: '2-digit',
       minute: '2-digit',
     });
-
-  if (disabled) return null;
 
   return (
     <>
