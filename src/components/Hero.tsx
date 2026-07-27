@@ -2,7 +2,7 @@ import { FiArrowUpRight, FiDownload, FiMapPin } from 'react-icons/fi';
 import type { SiteInfo, SocialItem, UiText } from '@/lib/content';
 import SocialIcon from './SocialIcon';
 import Avatar from './Avatar';
-import VoxelSphere from './VoxelSphere';
+import HeroObject from './HeroObject';
 
 export default function Hero({
   site,
@@ -17,8 +17,10 @@ export default function Hero({
     <section id="top" className="relative overflow-hidden pt-28 sm:pt-36">
       <div aria-hidden className="pointer-events-none absolute inset-0 grid-bg" />
 
-      {/* Ambient interactive voxel sphere behind the hero content */}
-      <VoxelSphere className="absolute left-1/2 top-1/2 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 opacity-35 sm:h-[640px] sm:w-[640px] lg:h-[760px] lg:w-[760px]" />
+      {/* Интерактивный 3D-кристалл: на широких экранах уходит вправо, под
+          текстовой колонкой остаётся только рассеянное свечение, поэтому
+          заголовок не теряет контраст. */}
+      <HeroObject className="absolute inset-0 opacity-45 sm:opacity-60 lg:opacity-100" />
 
       <div className="wrap relative">
         <div className="grid items-center gap-12 lg:grid-cols-[1.4fr_0.9fr]">
