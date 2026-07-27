@@ -15,9 +15,10 @@ export const SITE = {
   tagline: 'I build fast, responsive websites for business.',
   location: 'Tashkent, Uzbekistan',
   email: 'kama58077@gmail.com',
-  // Фото: положите квадратный снимок (~800x800) в public/kamron-fazilov.jpg.
-  // Если файла нет, Avatar покажет инициалы «KF».
-  avatar: '/kamron-fazilov.jpg',
+  // Фото по умолчанию — лежит в public/ и коммитится в репозиторий, поэтому
+  // доступно на любом деплое. Если админка задала своё, оно перекроет это
+  // значение; если файла нет вовсе, Avatar покажет инициалы «KF».
+  avatar: '/fazilov-kamron.png',
   // Резюме: положите PDF в public/Kamron_Fazilov_CV.pdf. Пока файла нет,
   // кнопки «Скачать CV» ведут на 404.
   cv: '/Kamron_Fazilov_CV.pdf',
