@@ -7,6 +7,7 @@ import { db } from '@/lib/db';
 import { endSession, requireSession, startSession, verifyCredentials } from '@/lib/auth';
 import { saveUpload, deleteUpload, guessMediaKind, UploadError } from '@/lib/storage';
 import { LOCALES, isLocale, type Locale } from '@/lib/i18n';
+import { normalizeSiteUrl } from '@/lib/data';
 import type { SiteInfo, UiText } from '@/lib/content';
 
 export type ActionState = { ok?: string; error?: string };
@@ -18,6 +19,7 @@ function revalidateSite() {
   revalidatePath('/uz');
   revalidatePath('/ru');
   revalidatePath('/sitemap.xml');
+  revalidatePath('/robots.txt');
   revalidatePath('/manifest.webmanifest');
 }
 
@@ -82,7 +84,10 @@ export async function logoutAction() {
 // ── Профиль ──────────────────────────────────────────────────────────────────
 
 const siteSchema = z.object({
-  url: z.string().url('Укажите полный URL, например https://example.com'),
+  // Домен уже нормализован normalizeSiteUrl (см. ниже): здесь остаётся только
+  // отсечь случай, когда нормализация вернула null — то есть введён мусор или
+  // технический адрес preview-деплоя.
+  url: z.string().url('Укажите рабочий домен сайта, например https://kamronfazilov.uz'),
   name: z.string().min(1, 'Имя не может быть пустым'),
   firstName: z.string().min(1),
   lastName: z.string().min(1),
@@ -101,7 +106,7 @@ export async function saveProfileAction(_prev: ActionState, formData: FormData):
       ?.data as SiteInfo | undefined;
 
     const parsed = siteSchema.safeParse({
-      url: str(formData, 'url').replace(/\/$/, ''),
+      url: normalizeSiteUrl(str(formData, 'url')) ?? '',
       name: str(formData, 'name'),
       firstName: str(formData, 'firstName'),
       lastName: str(formData, 'lastName'),

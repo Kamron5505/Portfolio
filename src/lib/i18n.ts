@@ -13,6 +13,11 @@ export const isLocale = (value: string): value is Locale =>
 
 // База по умолчанию — из data.ts; когда домен меняется через админку,
 // сюда передаётся значение из базы.
+//
+// Форма адреса — без хвостового слэша («https://site», «https://site/ru»).
+// Ровно так Next.js нормализует canonical и hreflang при trailingSlash: false,
+// поэтому canonical, hreflang, og:url, sitemap и JSON-LD совпадают символ в
+// символ и не порождают дублей одной и той же страницы.
 export const localeUrl = (locale: Locale, baseUrl: string = SITE.url) =>
   locale === 'en' ? baseUrl : `${baseUrl}/${locale}`;
 

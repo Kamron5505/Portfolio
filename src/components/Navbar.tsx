@@ -10,24 +10,49 @@ type InstallText = { button: string; iosHint: string };
 
 const localeHref = (locale: Locale) => (locale === 'en' ? '/' : `/${locale}`);
 
+// Полные названия языков: код «uz» сам по себе не читается скринридером как
+// язык, поэтому он уходит в aria-label, а на экране остаётся короткая метка.
+const LOCALE_NAMES: Record<Locale, string> = {
+  en: 'English',
+  uz: "O'zbekcha",
+  ru: 'Русский',
+};
+
 function LocaleSwitcher({ current, className }: { current: Locale; className?: string }) {
   return (
-    <span className={`inline-flex items-center gap-2 font-mono text-[11px] uppercase ${className ?? ''}`}>
+    <ul
+      aria-label="Language"
+      className={`m-0 inline-flex list-none items-center gap-2 p-0 font-mono text-[11px] uppercase ${className ?? ''}`}
+    >
       {LOCALES.map((l, i) => (
-        <span key={l} className="inline-flex items-center gap-2">
-          {i > 0 && <span className="text-line">/</span>}
+        <li key={l} className="inline-flex items-center gap-2">
+          {i > 0 && (
+            <span aria-hidden="true" className="text-line">
+              /
+            </span>
+          )}
           {l === current ? (
-            <span aria-current="true" className="text-accent">
-              {l}
+            <span aria-current="true" lang={l} className="text-accent">
+              <span className="sr-only">{LOCALE_NAMES[l]}</span>
+              <span aria-hidden="true">{l}</span>
             </span>
           ) : (
-            <a href={localeHref(l)} hrefLang={l} className="text-faint transition-colors hover:text-ink">
-              {l}
+            // Обычный <a>, а не next/link: у локалей разные корневые layout,
+            // клиентский переход между ними всё равно превратится в полную
+            // перезагрузку, зато краулер видит честную ссылку.
+            <a
+              href={localeHref(l)}
+              hrefLang={l}
+              lang={l}
+              aria-label={LOCALE_NAMES[l]}
+              className="text-faint transition-colors hover:text-ink"
+            >
+              <span aria-hidden="true">{l}</span>
             </a>
           )}
-        </span>
+        </li>
       ))}
-    </span>
+    </ul>
   );
 }
 

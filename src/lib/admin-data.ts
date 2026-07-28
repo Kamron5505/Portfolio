@@ -1,4 +1,5 @@
 import { db } from './db';
+import { normalizeSiteUrl } from './data';
 import { defaultSite, defaultUi, type SiteInfo, type UiText } from './content';
 import { LOCALES, type Locale } from './i18n';
 
@@ -47,7 +48,10 @@ export async function getSiteSettings(): Promise<SiteInfo> {
   const sql = db();
   const rows = (await sql`select data from site_settings where id = 1`) as Row[];
   // Слияние с дефолтами: поля, добавленные в код позже, не станут undefined.
-  return { ...defaultSite(), ...((rows[0]?.data as SiteInfo | undefined) ?? {}) };
+  const merged = { ...defaultSite(), ...((rows[0]?.data as SiteInfo | undefined) ?? {}) };
+  // Домен в форме показываем уже нормализованным: если в базе лежит старый
+  // адрес preview-деплоя, админ увидит канонический, а не технический.
+  return { ...merged, url: normalizeSiteUrl(merged.url) ?? defaultSite().url };
 }
 
 export async function getUiTexts(): Promise<Record<Locale, UiText>> {

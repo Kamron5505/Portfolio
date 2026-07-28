@@ -22,17 +22,24 @@ export default function Highlights({ ui, highlights }: { ui: UiText; highlights:
                     <video
                       src={item.src}
                       controls
+                      // metadata, а не auto: браузер тянет только заголовок
+                      // файла, а не десятки мегабайт видео при загрузке страницы.
                       preload="metadata"
                       playsInline
+                      aria-label={item.caption || `${ui.highlights.title} ${i + 1}`}
                       className="h-auto w-full"
                     />
                   ) : (
                     <Image
                       src={item.src}
-                      alt={item.caption || 'Highlight'}
+                      // Подпись — самый осмысленный alt. Если её нет, берём
+                      // локализованное название секции, а не английское слово.
+                      alt={item.caption || `${ui.highlights.title} ${i + 1}`}
                       width={800}
                       height={800}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      // Плитка всегда ниже первого экрана — грузим лениво.
+                      loading="lazy"
                       className="h-auto w-full transition-transform duration-500 group-hover:scale-[1.03]"
                     />
                   )}

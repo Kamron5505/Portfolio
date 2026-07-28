@@ -5,14 +5,19 @@ import '@/app/globals.css';
 import DevSwCleanup from '@/components/DevSwCleanup';
 import { fontVariables } from '@/lib/fonts';
 import { getSession } from '@/lib/auth';
+import { SITE } from '@/lib/data';
 import { logoutAction } from './actions';
 
 // /admin лежит вне групп (en) и (intl), поэтому это самостоятельный корневой
 // layout со своими <html> и <body>.
 export const metadata: Metadata = {
+  // Своя корневая ветка маршрутов — метаданные публичного сайта сюда не
+  // наследуются, поэтому metadataBase задаётся явно (иначе Next при сборке
+  // подставляет http://localhost:3000).
+  metadataBase: new URL(SITE.url),
   title: 'Админка',
   // Панель управления не должна попадать в поиск ни при каких условиях.
-  robots: { index: false, follow: false },
+  robots: { index: false, follow: false, nocache: true },
 };
 
 export const viewport: Viewport = {

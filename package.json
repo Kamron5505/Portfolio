@@ -14,7 +14,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "db:setup": "tsx --env-file=.env.local scripts/db-setup.ts"
+    "db:setup": "tsx --env-file=.env.local scripts/db-setup.ts",
+    "db:fix-url": "tsx --env-file=.env.local scripts/fix-site-url.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",

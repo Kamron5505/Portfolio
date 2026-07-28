@@ -21,6 +21,18 @@ const nextConfig = {
       { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
     ],
   },
+  async redirects() {
+    return [
+      {
+        // www → апекс-домен, 301. Без этого www- и безwww-версии считаются
+        // разными сайтами и делят между собой вес ссылок.
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.kamronfazilov.uz' }],
+        destination: 'https://kamronfazilov.uz/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
@@ -31,11 +43,14 @@ const nextConfig = {
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          // HTTPS-only. Домен подключается сразу по https, поэтому годичный
+          // max-age безопасен и убирает лишний редирект http → https.
+          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
         ],
       },
       {
         // Долгий кеш для неизменяемой статики.
-        source: '/:all*(svg|jpg|jpeg|png|webp|avif|woff2)',
+        source: '/:all*(svg|jpg|jpeg|png|webp|avif|woff2|ico)',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {

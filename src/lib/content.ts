@@ -1,7 +1,8 @@
 import { cache } from 'react';
-import { NAV, PROJECTS, SITE, SKILLS, SOCIALS } from './data';
+import { CANONICAL_SITE_URL, NAV, normalizeSiteUrl, PROJECTS, SITE, SKILLS, SOCIALS } from './data';
 import { getDict, type Locale } from './i18n';
 import { db, safeQuery } from './db';
+import { assetExists } from './public-assets';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Единый слой контента для публичного сайта.
@@ -80,6 +81,23 @@ export type Content = {
 
 export const defaultSite = (): SiteInfo => ({ ...SITE });
 
+/**
+ * Приводит запись сайта к тому виду, в котором её безопасно отдавать в SEO.
+ *
+ *  - url: нормализуется (https, без хвостового слэша) и откатывается на
+ *    канонический домен, если в базе пусто, мусор или адрес preview-деплоя.
+ *    Это гарантия, что canonical/sitemap/JSON-LD не уедут на технический домен.
+ *  - cv: обнуляется, если файла нет в public/ — иначе кнопка «Скачать CV» и
+ *    ссылка в sitemap вели бы на 404.
+ */
+function normalizeSite(site: SiteInfo): SiteInfo {
+  return {
+    ...site,
+    url: normalizeSiteUrl(site.url) ?? SITE.url ?? CANONICAL_SITE_URL,
+    cv: assetExists(site.cv) ? site.cv : '',
+  };
+}
+
 export const defaultUi = (locale: Locale): UiText => {
   const d = getDict(locale);
   return {
@@ -146,7 +164,7 @@ function pickTranslation<T extends Record<string, unknown>>(translations: unknow
 // и страница просят контент независимо, но запрос к базе уходит один.
 export const getContent = cache(async (locale: Locale): Promise<Content> => {
   const fallback: Content = {
-    site: defaultSite(),
+    site: normalizeSite(defaultSite()),
     ui: defaultUi(locale),
     socials: defaultSocials(),
     projects: defaultProjects(locale),
@@ -178,7 +196,7 @@ export const getContent = cache(async (locale: Locale): Promise<Content> => {
     return {
       // Мягкое слияние: поля, которых ещё нет в базе (например, добавленные
       // позже), подхватываются из дефолтов, а не превращаются в undefined.
-      site: { ...fallback.site, ...site },
+      site: normalizeSite({ ...fallback.site, ...site }),
       ui: storedUi ? { ...fallback.ui, ...storedUi } : fallback.ui,
 
       socials: socials.length

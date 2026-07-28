@@ -10,13 +10,25 @@ export default function Projects({ ui, projects }: { ui: UiText; projects: Proje
       <div className="wrap">
         <SectionHeading index="04" eyebrow={ui.projects.eyebrow} title={ui.projects.title} />
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {projects.map((project, i) => (
-            <Reveal key={project.id} delay={i * 0.06} className={project.featured ? 'md:col-span-2' : ''}>
-              <a
-                href={project.href || '#'}
-                target={project.href ? '_blank' : undefined}
-                rel={project.href ? 'noopener noreferrer' : undefined}
+        <ul className="grid list-none gap-4 p-0 md:grid-cols-2">
+          {projects.map((project, i) => {
+            // Ссылка есть не у каждого проекта. Раньше пустой href превращался
+            // в «#» — клик по карточке дёргал страницу вверх, а краулер видел
+            // ссылку в никуда. Без адреса карточка просто не кликабельна.
+            const Card = project.href ? 'a' : 'div';
+            const linkProps = project.href
+              ? { href: project.href, target: '_blank', rel: 'noopener noreferrer' }
+              : {};
+
+            return (
+            <Reveal
+              as="li"
+              key={project.id}
+              delay={i * 0.06}
+              className={project.featured ? 'md:col-span-2' : ''}
+            >
+              <Card
+                {...linkProps}
                 className="card card-hover group flex h-full flex-col overflow-hidden"
               >
                 {/* Обложка загружается в админке; без неё карточка просто плотнее. */}
@@ -24,9 +36,11 @@ export default function Projects({ ui, projects }: { ui: UiText; projects: Proje
                   <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-line bg-surface-2">
                     <Image
                       src={project.cover}
-                      alt={project.name}
+                      alt={`${project.name}${project.meta ? ` — ${project.meta}` : ''}`}
                       fill
                       sizes="(max-width: 768px) 100vw, 50vw"
+                      // Секция всегда ниже первого экрана — обложки лениво.
+                      loading="lazy"
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     />
                   </div>
@@ -35,10 +49,13 @@ export default function Projects({ ui, projects }: { ui: UiText; projects: Proje
                 <div className="flex flex-1 flex-col p-6">
                   <div className="mb-3 flex items-start justify-between gap-4">
                     <h3 className="font-display text-xl font-bold text-ink">{project.name}</h3>
-                    <FiArrowUpRight
-                      className="shrink-0 text-faint transition-colors group-hover:text-accent"
-                      size={20}
-                    />
+                    {project.href && (
+                      <FiArrowUpRight
+                        aria-hidden="true"
+                        className="shrink-0 text-faint transition-colors group-hover:text-accent"
+                        size={20}
+                      />
+                    )}
                   </div>
 
                   {project.meta && (
@@ -57,10 +74,11 @@ export default function Projects({ ui, projects }: { ui: UiText; projects: Proje
                     ))}
                   </ul>
                 </div>
-              </a>
+              </Card>
             </Reveal>
-          ))}
-        </div>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );

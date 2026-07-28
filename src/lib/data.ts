@@ -3,9 +3,51 @@
 // the metadata and the JSON-LD schema read from this file.
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Канонический домен сайта. Всё SEO (canonical, hreflang, og:url, sitemap,
+// robots, JSON-LD) строится ровно от этого значения — второго места, где
+// хранится адрес, быть не должно.
+//
+// Переопределяется переменной окружения NEXT_PUBLIC_SITE_URL (например, для
+// staging-домена). Значение проходит через normalizeSiteUrl: мусор и адреса
+// preview-деплоев отбрасываются, чтобы канонические ссылки никогда не уехали
+// на технический домен хостинга.
+// ─────────────────────────────────────────────────────────────────────────────
+export const CANONICAL_SITE_URL = 'https://kamronfazilov.uz';
+
+// Домены хостингов: сюда деплоятся preview-сборки, но канонический адрес сайта
+// это никогда не они — иначе Google проиндексирует технический URL как основной.
+const PREVIEW_HOSTS = /\.(vercel\.app|netlify\.app|pages\.dev|onrender\.com|railway\.app)$/i;
+
+/**
+ * Приводит адрес сайта к каноническому виду: https, без слэша в конце.
+ * Возвращает null для пустых, некорректных и preview-адресов — вызывающий код
+ * в этом случае берёт CANONICAL_SITE_URL.
+ */
+export function normalizeSiteUrl(value: string | undefined | null): string | null {
+  const raw = value?.trim();
+  if (!raw) return null;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(raw.includes('://') ? raw : `https://${raw}`);
+  } catch {
+    return null;
+  }
+
+  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return null;
+  if (PREVIEW_HOSTS.test(parsed.hostname)) return null;
+
+  // localhost оставляем как есть (http, порт), остальное принудительно на https.
+  const isLocal = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1';
+  const origin = isLocal ? parsed.origin : `https://${parsed.host}`;
+  return origin.replace(/\/+$/, '');
+}
+
+export const SITE_URL = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL) ?? CANONICAL_SITE_URL;
+
 export const SITE = {
-  // TODO: заменить на реальный домен, когда он будет подключён.
-  url: 'https://kamronfazilov.vercel.app',
+  url: SITE_URL,
   name: 'Kamron Fazilov',
   firstName: 'Kamron',
   lastName: 'Fazilov',
@@ -19,8 +61,10 @@ export const SITE = {
   // доступно на любом деплое. Если админка задала своё, оно перекроет это
   // значение; если файла нет вовсе, Avatar покажет инициалы «KF».
   avatar: '/fazilov-kamron.png',
-  // Резюме: положите PDF в public/Kamron_Fazilov_CV.pdf. Пока файла нет,
-  // кнопки «Скачать CV» ведут на 404.
+  // Резюме: положите PDF в public/Kamron_Fazilov_CV.pdf.
+  // Пока файла физически нет, content.ts обнуляет это поле: кнопки «Скачать CV»
+  // не рендерятся, ссылка не попадает в sitemap и JSON-LD. Как только PDF
+  // окажется в public/, всё включится само — менять код не нужно.
   cv: '/Kamron_Fazilov_CV.pdf',
   createdAt: '2026-07-14',
   updatedAt: '2026-07-14',
