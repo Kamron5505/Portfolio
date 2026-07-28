@@ -16,7 +16,7 @@ export default function Contact({
   return (
     <section id="contact" className="scroll-mt-24 py-24">
       <div className="wrap">
-        <SectionHeading index="06" eyebrow={ui.contact.eyebrow} title={ui.contact.title} />
+        <SectionHeading index="07" eyebrow={ui.contact.eyebrow} title={ui.contact.title} />
 
         <Reveal>
           <div className="card relative overflow-hidden p-8 text-center sm:p-12">

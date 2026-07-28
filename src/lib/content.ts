@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { CANONICAL_SITE_URL, NAV, normalizeSiteUrl, PROJECTS, SITE, SKILLS, SOCIALS } from './data';
-import { getDict, type Locale } from './i18n';
+import { getDict, type Locale, type QuizText } from './i18n';
 import { assetExists } from './public-assets';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -46,6 +46,7 @@ export type UiText = {
   skills: { eyebrow: string; title: string };
   projects: { eyebrow: string; title: string };
   highlights: { eyebrow: string; title: string };
+  quiz: QuizText;
   contact: { eyebrow: string; title: string; blurb: string; writeTelegram: string; downloadCv: string };
   footer: { built: string; credit: string };
   install: { button: string; iosHint: string };
@@ -139,6 +140,12 @@ const buildUi = (locale: Locale): UiText => {
     skills: { eyebrow: d.skills.eyebrow, title: d.skills.title },
     projects: { eyebrow: d.projects.eyebrow, title: d.projects.title },
     highlights: { eyebrow: d.highlights.eyebrow, title: d.highlights.title },
+    quiz: {
+      ...d.quiz,
+      remaining: { ...d.quiz.remaining },
+      questions: d.quiz.questions.map((q) => ({ ...q, options: [...q.options] })),
+      done: { ...d.quiz.done },
+    },
     contact: { ...d.contact },
     footer: { ...d.footer },
     install: { ...d.install },

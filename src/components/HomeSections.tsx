@@ -5,6 +5,7 @@ import Services from '@/components/Services';
 import Skills from '@/components/Skills';
 import Projects from '@/components/Projects';
 import Highlights from '@/components/Highlights';
+import Quiz from '@/components/Quiz';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import { getContent } from '@/lib/content';
@@ -39,6 +40,7 @@ export default async function HomeSections({ locale }: { locale: Locale }) {
         <Skills ui={ui} skills={skills} />
         <Projects ui={ui} projects={projects} />
         <Highlights ui={ui} highlights={highlights} />
+        <Quiz ui={ui} locale={locale} />
         <Contact site={site} ui={ui} socials={socials} />
       </main>
       <Footer site={site} ui={ui} />

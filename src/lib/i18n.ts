@@ -21,6 +21,55 @@ export const isLocale = (value: string): value is Locale =>
 export const localeUrl = (locale: Locale, baseUrl: string = SITE.url) =>
   locale === 'en' ? baseUrl : `${baseUrl}/${locale}`;
 
+// ── Квиз-консультация ────────────────────────────────────────────────────────
+
+/** Формы множественного числа. `{n}` подставляется числом. */
+export type PluralForms = { one: string; few: string; many: string };
+
+export type QuizQuestion = { title: string; hint: string; options: string[] };
+
+export type QuizText = {
+  eyebrow: string;
+  title: string;
+  /** Бейдж над сообщениями ассистента. */
+  badge: string;
+  intro: string;
+  quickLabel: string;
+  placeholder: string;
+  send: string;
+  /** «Осталось N вопросов» в шапке карточки. */
+  remaining: PluralForms;
+  questions: QuizQuestion[];
+  done: { badge: string; title: string; text: string; recapLabel: string; cta: string; restart: string };
+  /** Состояния запроса консультации у модели. */
+  result: { loading: string; title: string; error: string; retry: string };
+};
+
+/**
+ * Выбирает форму множественного числа и подставляет число.
+ *
+ * Русский требует три формы (1 вопрос / 2 вопроса / 5 вопросов), английский —
+ * две, узбекский — одну: после числительного существительное там не
+ * согласуется, поэтому берётся `many` при любом N.
+ */
+export function plural(locale: Locale, n: number, forms: PluralForms): string {
+  let form: string;
+
+  if (locale === 'ru') {
+    const mod10 = n % 10;
+    const mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) form = forms.one;
+    else if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) form = forms.few;
+    else form = forms.many;
+  } else if (locale === 'en') {
+    form = n === 1 ? forms.one : forms.many;
+  } else {
+    form = forms.many;
+  }
+
+  return form.replace('{n}', String(n));
+}
+
 export type Dict = {
   meta: { title: string; description: string; ogLocale: string };
   role: string;
@@ -50,6 +99,7 @@ export type Dict = {
     items: { description: string; meta?: string }[];
   };
   highlights: { eyebrow: string; title: string };
+  quiz: QuizText;
   contact: {
     eyebrow: string;
     title: string;
@@ -127,6 +177,103 @@ const en: Dict = {
     items: PROJECTS.map((p) => ({ description: p.description, meta: p.meta })),
   },
   highlights: { eyebrow: 'moments', title: 'Highlights' },
+  quiz: {
+    eyebrow: 'consultation',
+    title: 'Answer a few questions and the agent will map out your funnel and the cost of the build',
+    badge: 'AI agent',
+    intro:
+      "I'll draft the site strategy, estimate the cost and suggest which package gives the best result. Answer freely or pick a quick option.",
+    quickLabel: 'Quick options',
+    placeholder: 'Type your niche or pick a quick option…',
+    send: 'Send',
+    remaining: { one: '{n} question left', few: '{n} questions left', many: '{n} questions left' },
+    questions: [
+      {
+        title: 'What niche is the business in?',
+        hint: 'Start with the market. The niche drives the offer, the visual level, trust and the enquiry flow.',
+        options: [
+          'Services',
+          'Expert / personal brand',
+          'E-commerce',
+          'Restaurant / delivery',
+          'Real estate',
+          'Medical / dental',
+          'Education',
+          'Fitness / beauty',
+          'B2B / manufacturing',
+        ],
+      },
+      {
+        title: 'What should the site bring in?',
+        hint: 'The goal shapes the structure: a site built for enquiries, for sales or for trust is a different site.',
+        options: [
+          'Enquiries and calls',
+          'Online sales',
+          'Bookings',
+          'Catalogue and presentation',
+          'Portfolio / CV',
+          'Leads from ads',
+        ],
+      },
+      {
+        title: 'Do you already have a site?',
+        hint: 'This decides whether we build from scratch or keep and rework what already performs.',
+        options: ['No, from scratch', 'Yes, needs a redesign', 'Yes, needs fixes', 'Only social media'],
+      },
+      {
+        title: 'How many pages do you need?',
+        hint: 'A rough size is enough to estimate the timeline and the cost.',
+        options: ['One-page landing', '2–5 pages', '6–15 pages', 'Catalogue, 15+ pages', 'Not sure yet'],
+      },
+      {
+        title: 'Which integrations do you need?',
+        hint: 'Forms, payments and CRM affect the backend far more than the layout does.',
+        options: [
+          'Enquiry form',
+          'Telegram / WhatsApp',
+          'Online payments',
+          'CRM',
+          'Map and locations',
+          'User accounts',
+          'None for now',
+        ],
+      },
+      {
+        title: 'Who prepares the content?',
+        hint: 'Copy and photos are the most common reason a launch slips.',
+        options: ['Everything is ready', 'Partly ready', 'Need copywriting', 'Need photos', 'Need all of it'],
+      },
+      {
+        title: 'Which languages should the site speak?',
+        hint: 'Multilingual support is designed into the structure up front — retrofitting it costs more.',
+        options: ['English', 'Russian', 'Uzbek', 'RU + UZ', 'RU + UZ + EN'],
+      },
+      {
+        title: 'When do you need to launch?',
+        hint: 'The deadline decides the scope: what ships first and what lands in the second iteration.',
+        options: ['Yesterday', 'Within 2 weeks', 'About a month', '2–3 months', 'Flexible'],
+      },
+      {
+        title: 'What budget are you working with?',
+        hint: 'A range lets me propose an honest package instead of selling you extras.',
+        options: ['Under $300', '$300–700', '$700–1500', '$1500+', 'Need advice on this'],
+      },
+    ],
+    done: {
+      badge: 'Done',
+      title: 'That’s all the questions',
+      text: 'Thanks — the picture is clear. Message me on Telegram and I’ll come back with the funnel, the scope of work and a price range for your case.',
+      recapLabel: 'Your answers',
+      cta: 'Discuss the project',
+      restart: 'Start over',
+    },
+    result: {
+      loading: 'Reading your answers…',
+      title: 'Here is what I would do',
+      error: 'Could not reach the agent. Your answers are saved — try again, or just message me on Telegram.',
+      retry: 'Try again',
+    },
+  },
   contact: {
     eyebrow: 'say hello',
     title: "Let's work together",
@@ -266,6 +413,104 @@ const uz: Dict = {
     ],
   },
   highlights: { eyebrow: 'lavhalar', title: 'Lavhalar' },
+  quiz: {
+    eyebrow: 'konsultatsiya',
+    title: "Savollarga javob bering — agent voronka va ishlab chiqish narxini baholab beradi",
+    badge: 'AI agent',
+    intro:
+      "Sayt strategiyasini tuzaman, narxini chamalayman va qaysi paket eng yaxshi natija berishini aytaman. Erkin javob bering yoki tayyor variantni tanlang.",
+    quickLabel: 'Tezkor variantlar',
+    placeholder: "Nishani yozing yoki tayyor variantni tanlang…",
+    send: 'Yuborish',
+    remaining: { one: 'Yana {n} ta savol', few: 'Yana {n} ta savol', many: 'Yana {n} ta savol' },
+    questions: [
+      {
+        title: 'Biznes qaysi sohada ishlaydi?',
+        hint: "Bozordan boshlaymiz. Soha oferta, vizual daraja, ishonch va ariza stsenariysini belgilaydi.",
+        options: [
+          'Xizmatlar',
+          'Ekspert / shaxsiy brend',
+          'E-commerce',
+          'Restoran / yetkazib berish',
+          "Ko'chmas mulk",
+          'Tibbiyot / stomatologiya',
+          "Ta'lim",
+          'Fitnes / go‘zallik',
+          'B2B / ishlab chiqarish',
+        ],
+      },
+      {
+        title: 'Sayt nima olib kelishi kerak?',
+        hint: "Maqsad tuzilmani belgilaydi: ariza uchun, sotuv uchun va ishonch uchun butunlay boshqa sayt yig'iladi.",
+        options: [
+          'Arizalar va qo‘ng‘iroqlar',
+          'Onlayn sotuv',
+          'Xizmatga yozilish',
+          'Katalog va taqdimot',
+          'Portfolio / rezyume',
+          'Reklamadan arizalar',
+        ],
+      },
+      {
+        title: 'Saytingiz bormi?',
+        hint: "Shunga qarab noldan quramiz yoki ishlayotgan qismini saqlab qayta ishlaymiz.",
+        options: ["Yo'q, noldan", 'Bor, redizayn kerak', 'Bor, tuzatish kerak', 'Faqat ijtimoiy tarmoqlar'],
+      },
+      {
+        title: 'Nechta sahifa kerak?',
+        hint: "Taxminiy hajm yetarli — muddat va narxni chamalash uchun shuning o'zi kifoya.",
+        options: ['Bir sahifali landing', '2–5 sahifa', '6–15 sahifa', 'Katalog, 15+ sahifa', 'Hali bilmayman'],
+      },
+      {
+        title: 'Qanday integratsiyalar kerak?',
+        hint: "Formalar, to'lov va CRM backend qismiga verstkadan ko'ra kuchliroq ta'sir qiladi.",
+        options: [
+          'Ariza formasi',
+          'Telegram / WhatsApp',
+          "Onlayn to'lov",
+          'CRM',
+          'Xarita va manzillar',
+          'Shaxsiy kabinet',
+          'Hozircha kerak emas',
+        ],
+      },
+      {
+        title: 'Kontentni kim tayyorlaydi?',
+        hint: "Matn va suratlar — ishga tushirish kechikishining eng keng tarqalgan sababi.",
+        options: ['Hammasi tayyor', 'Qisman tayyor', 'Matn kerak', 'Surat kerak', "Hammasi kerak"],
+      },
+      {
+        title: 'Sayt qaysi tillarda bo‘lsin?',
+        hint: "Ko'p tillilik tuzilmaga darhol qo'yiladi — keyin qo'shish qimmatroq tushadi.",
+        options: ["O'zbekcha", 'Ruscha', 'Inglizcha', 'RU + UZ', 'RU + UZ + EN'],
+      },
+      {
+        title: 'Qachon ishga tushirish kerak?',
+        hint: "Muddat ish hajmini belgilaydi: nimani darhol, nimani ikkinchi bosqichda qilamiz.",
+        options: ['Kecha', '2 hafta ichida', 'Bir oy', '2–3 oy', 'Muddat erkin'],
+      },
+      {
+        title: 'Qanday byudjetga mo‘ljallayapsiz?',
+        hint: "Oralig'i kerak — ortiqchasini sotmasdan, halol paket taklif qilish uchun.",
+        options: ['$300 gacha', '$300–700', '$700–1500', '$1500 dan', 'Maslahat kerak'],
+      },
+    ],
+    done: {
+      badge: 'Tayyor',
+      title: 'Savollar tugadi',
+      text: "Rahmat — manzara aniq. Telegramda yozing, men voronka, ish tarkibi va sizning holatingiz uchun narx oralig'i bilan qaytaman.",
+      recapLabel: 'Sizning javoblaringiz',
+      cta: 'Loyihani muhokama qilish',
+      restart: 'Qaytadan boshlash',
+    },
+    result: {
+      loading: 'Javoblaringizni o‘qiyapman…',
+      title: 'Men shunday qilgan bo‘lardim',
+      error:
+        "Agentga ulanib bo'lmadi. Javoblaringiz saqlandi — qayta urinib ko'ring yoki Telegramda yozing.",
+      retry: 'Qayta urinish',
+    },
+  },
   contact: {
     eyebrow: 'salom ayting',
     title: 'Keling, birga ishlaymiz',
@@ -402,6 +647,104 @@ const ru: Dict = {
     ],
   },
   highlights: { eyebrow: 'моменты', title: 'Хайлайты' },
+  quiz: {
+    eyebrow: 'консультация',
+    title: 'Ответьте на вопросы и агент проконсультирует по воронке и стоимости разработки',
+    badge: 'AI агент',
+    intro:
+      'Построю стратегию сайта, прикину стоимость и подскажу, какой пакет даст лучший результат. Отвечайте свободно или выбирайте быстрые варианты.',
+    quickLabel: 'Быстрые варианты',
+    placeholder: 'Напишите нишу или выберите быстрый вариант…',
+    send: 'Отправить',
+    remaining: { one: 'Остался {n} вопрос', few: 'Осталось {n} вопроса', many: 'Осталось {n} вопросов' },
+    questions: [
+      {
+        title: 'В какой нише работает бизнес?',
+        hint: 'Начнём с рынка. От ниши зависит оффер, визуальный уровень, доверие и сценарий заявки.',
+        options: [
+          'Услуги',
+          'Эксперт / личный бренд',
+          'E-commerce',
+          'Ресторан / доставка',
+          'Недвижимость',
+          'Медицина / стоматология',
+          'Образование',
+          'Фитнес / бьюти',
+          'B2B / производство',
+        ],
+      },
+      {
+        title: 'Что сайт должен приносить?',
+        hint: 'Цель определяет структуру: под заявку, под продажу и под доверие собираются разные сайты.',
+        options: [
+          'Заявки и звонки',
+          'Продажи онлайн',
+          'Запись на услугу',
+          'Каталог и презентация',
+          'Портфолио / резюме',
+          'Заявки из рекламы',
+        ],
+      },
+      {
+        title: 'Сайт уже есть?',
+        hint: 'От этого зависит, делаем с нуля или сохраняем и переделываем то, что уже работает.',
+        options: ['Нет, с нуля', 'Есть, нужен редизайн', 'Есть, нужны доработки', 'Только соцсети'],
+      },
+      {
+        title: 'Какой объём страниц нужен?',
+        hint: 'Грубой оценки объёма достаточно, чтобы прикинуть срок и стоимость.',
+        options: ['Одностраничный лендинг', '2–5 страниц', '6–15 страниц', 'Каталог от 15 страниц', 'Пока не знаю'],
+      },
+      {
+        title: 'Какие интеграции нужны?',
+        hint: 'Формы, оплата и CRM влияют на бэкенд сильнее, чем сама вёрстка.',
+        options: [
+          'Форма заявки',
+          'Telegram / WhatsApp',
+          'Онлайн-оплата',
+          'CRM',
+          'Карта и адреса',
+          'Личный кабинет',
+          'Пока ничего',
+        ],
+      },
+      {
+        title: 'Кто готовит контент?',
+        hint: 'Тексты и фото — самая частая причина, по которой запуск сдвигается.',
+        options: ['Всё готово', 'Готово частично', 'Нужны тексты', 'Нужны фото', 'Нужно всё'],
+      },
+      {
+        title: 'На каких языках сайт?',
+        hint: 'Мультиязычность закладывается в структуру сразу — добавлять её потом дороже.',
+        options: ['Русский', 'Узбекский', 'Английский', 'RU + UZ', 'RU + UZ + EN'],
+      },
+      {
+        title: 'Когда нужен запуск?',
+        hint: 'Срок определяет состав работ: что делаем сразу, а что во второй итерации.',
+        options: ['Вчера', 'До 2 недель', 'Около месяца', '2–3 месяца', 'Сроки гибкие'],
+      },
+      {
+        title: 'На какой бюджет ориентируетесь?',
+        hint: 'Вилка нужна, чтобы предложить честный пакет, а не продать лишнее.',
+        options: ['До $300', '$300–700', '$700–1500', 'От $1500', 'Нужна консультация'],
+      },
+    ],
+    done: {
+      badge: 'Готово',
+      title: 'Вопросы закончились',
+      text: 'Спасибо — картина ясна. Напишите мне в Telegram, и я вернусь с воронкой, составом работ и вилкой стоимости под ваш случай.',
+      recapLabel: 'Ваши ответы',
+      cta: 'Обсудить проект',
+      restart: 'Пройти заново',
+    },
+    result: {
+      loading: 'Читаю ваши ответы…',
+      title: 'Вот что я бы сделал',
+      error:
+        'Не получилось связаться с агентом. Ответы сохранены — попробуйте ещё раз или просто напишите мне в Telegram.',
+      retry: 'Попробовать снова',
+    },
+  },
   contact: {
     eyebrow: 'на связи',
     title: 'Давайте поработаем',
