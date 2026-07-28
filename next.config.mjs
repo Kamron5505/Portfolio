@@ -5,21 +5,10 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
-  // PGlite (встроенная локальная БД) тянет WASM-бинарь — его нельзя бандлить,
-  // пакет должен грузиться из node_modules как есть.
-  serverExternalPackages: ['@electric-sql/pglite'],
-  experimental: {
-    // Загрузки через Server Actions по умолчанию режутся на 1 МБ — мало даже для
-    // фото. На своём сервере это снимает потолок; на Vercel всё равно действует
-    // платформенный лимит ~4.5 МБ, поэтому крупные видео даём внешней ссылкой.
-    serverActions: { bodySizeLimit: '48mb' },
-  },
   images: {
+    // Все изображения лежат в public/ — внешних источников у сайта нет,
+    // поэтому remotePatterns не нужны.
     formats: ['image/avif', 'image/webp'],
-    remotePatterns: [
-      // Фото и обложки, загруженные через админку, лежат в Vercel Blob.
-      { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
-    ],
   },
   async redirects() {
     return [

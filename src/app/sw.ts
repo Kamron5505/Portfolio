@@ -13,11 +13,11 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
-// Админка и API не должны проходить через service worker вовсе: в офлайне там
-// показать нечего, а любой перехват добавляет точку отказа (сбой сети внутри
-// стратегии превращается в необработанный no-response). Незаматченные запросы
-// Serwist не трогает — браузер выполняет их нативно.
-const isBypassed = (url: URL) => url.pathname.startsWith('/admin') || url.pathname.startsWith('/api');
+// API не должен проходить через service worker вовсе: в офлайне там показать
+// нечего, а любой перехват добавляет точку отказа (сбой сети внутри стратегии
+// превращается в необработанный no-response). Незаматченные запросы Serwist
+// не трогает — браузер выполняет их нативно.
+const isBypassed = (url: URL) => url.pathname.startsWith('/api');
 
 const withBypass = (entry: RuntimeCaching): RuntimeCaching => {
   const base = entry.matcher;

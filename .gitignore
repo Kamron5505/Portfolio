@@ -38,9 +38,3 @@ next-env.d.ts
 /public/sw.js
 /public/sw.js.map
 /public/swe-worker-*.js
-
-# загруженные через админку файлы (локальный режим)
-/public/uploads
-
-# встроенная локальная БД (PGlite) — данные, не код
-/.pglite/
