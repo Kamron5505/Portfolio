@@ -108,7 +108,9 @@ const buildProjects = (locale: Locale): ProjectItem[] => {
     id: i + 1,
     name: p.name,
     href: p.href,
-    cover: null,
+    // Как и с CV: путь обнуляется, если файла нет в public/. Иначе карточка
+    // отрисовала бы <Image> на 404 — с дырой в вёрстке вместо обложки.
+    cover: assetExists(p.cover) ? (p.cover as string) : null,
     tags: [...p.tags],
     featured: Boolean(p.featured),
     description: items[i]?.description ?? p.description,

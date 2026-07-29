@@ -113,79 +113,98 @@ export type Project = {
   href: string;
   featured?: boolean;
   meta?: string;
+  // Обложка карточки — файл в public/, 16:9. Есть не у каждого проекта:
+  // без неё карточка рендерится без картинки, только текстом.
+  cover?: string;
 };
-
-// TODO: заменить href на реальные ссылки на живые сайты, где они есть.
-const GH = 'https://github.com/Kamron5505';
 
 export const PROJECTS: Project[] = [
   {
-    name: 'StarPayUzAuto',
+    name: 'Aidevix',
     description:
-      'Car payment and service platform for the Uzbek market: client flow, admin panel and a typed API on top of PostgreSQL.',
-    tags: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
-    href: GH,
+      'Online school for programming and IT courses in Uzbek: course catalogue, lesson flow and student progress.',
+    tags: ['Next.js', 'TypeScript', 'Tailwind CSS', 'PostgreSQL'],
+    href: 'https://aidevix.uz',
     featured: true,
-    meta: 'Commercial · 2025',
+    meta: 'Commercial · 2026',
+    cover: '/projects/aidevix.webp',
   },
   {
-    name: 'AI SEO Rank Tracker Dashboard',
+    name: 'ExpoBrokGroup',
     description:
-      'Dashboard that tracks keyword positions and turns raw ranking data into a readable weekly picture.',
-    tags: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL'],
-    href: GH,
+      'Site for a Coca-Cola export company: product range, export geography and an enquiry form for wholesale buyers.',
+    tags: ['Next.js', 'TypeScript', 'Tailwind CSS'],
+    href: 'https://expobrokgroup.uz',
     featured: true,
-    meta: 'Product · 2025',
+    meta: 'Commercial · 2026',
+    cover: '/projects/expobrokgroup.webp',
+  },
+  {
+    name: 'StarPayUz Bot',
+    description:
+      'Telegram mini app for buying Stars and Premium: balance, order flow, gifts and a user rating inside the bot.',
+    tags: ['Telegram Mini App', 'React', 'TypeScript', 'Node.js'],
+    href: 'https://t.me/starpayuzauto_bot',
+    meta: 'Commercial · 2025',
+    cover: '/projects/starpayuz-bot.webp',
   },
   {
     name: 'UMAL Store',
     description: 'Online store with a catalogue, filters, cart and an order flow wired into a REST API.',
     tags: ['Next.js', 'Tailwind CSS', 'REST API'],
-    href: GH,
+    href: 'https://umal-store.vercel.app',
     meta: 'E-commerce · 2025',
+    cover: '/projects/umal-store.webp',
   },
   {
     name: 'Belora Tashkent',
     description:
       'Site for a Tashkent beauty studio: services, pricing and a booking request that lands straight in Telegram.',
     tags: ['Next.js', 'Tailwind CSS'],
-    href: GH,
+    href: 'https://belora-tashkent.vercel.app',
     meta: 'Commercial · 2025',
+    cover: '/projects/belora.webp',
   },
   {
-    name: 'RED Series',
-    description: 'Film and series catalogue with search, filtering and detail pages, built on a public REST API.',
+    name: 'Olcha',
+    description:
+      'Marketplace front-end: category catalogue, promo blocks, search and a product card with delivery and pricing.',
     tags: ['React', 'Vite', 'REST API'],
-    href: GH,
-    meta: 'Product · 2024',
+    href: 'https://olcha-omega.vercel.app',
+    meta: 'E-commerce · 2025',
+    cover: '/projects/olcha.webp',
   },
   {
     name: 'Spotify Clone',
     description: 'Spotify interface rebuilt from scratch: player state, playlists and responsive layout down to 320px.',
     tags: ['React', 'TypeScript', 'Tailwind CSS'],
-    href: GH,
+    href: 'https://spotify-clone-one-kohl.vercel.app',
     meta: 'Practice · 2024',
+    cover: '/projects/spotify-clone.webp',
   },
   {
     name: 'Perfume Landing',
     description: 'Perfume landing page built on typography and product photography, with no template underneath.',
     tags: ['HTML5', 'CSS3', 'JavaScript'],
-    href: GH,
+    href: 'https://perfumewebsite-tau.vercel.app',
     meta: 'Landing · 2024',
+    cover: '/projects/perfume-landing.webp',
   },
   {
     name: 'Starbucks Landing',
     description: 'Starbucks-style landing page: full responsive markup and scroll motion, written by hand.',
     tags: ['HTML5', 'CSS3', 'JavaScript'],
-    href: GH,
+    href: 'https://starbucks-landing-delta.vercel.app',
     meta: 'Landing · 2024',
+    cover: '/projects/starbucks-landing.webp',
   },
   {
-    name: 'Weather App',
-    description: 'Weather app on a public API: geolocation, forecast and clear error and loading states.',
-    tags: ['JavaScript', 'REST API'],
-    href: GH,
-    meta: 'Practice · 2024',
+    name: 'Flow',
+    description: 'Task manager with lists, deadlines and progress: everything stays on the phone, offline included.',
+    tags: ['React', 'TypeScript', 'Tailwind CSS'],
+    href: 'https://todo-list-five-xi-88.vercel.app',
+    meta: 'Product · 2026',
+    cover: '/projects/flow.webp',
   },
 ];
 

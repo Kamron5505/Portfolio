@@ -372,13 +372,18 @@ const uz: Dict = {
     items: [
       {
         description:
-          "O'zbekiston bozori uchun avtomobil to'lov va xizmat platformasi: mijoz oqimi, admin panel va PostgreSQL ustidagi tipli API.",
-        meta: 'Tijorat · 2025',
+          "O'zbek tilida dasturlash va IT kurslari onlayn maktabi: kurslar katalogi, dars oqimi va o'quvchi progressi.",
+        meta: 'Tijorat · 2026',
       },
       {
         description:
-          "Kalit so'zlar pozitsiyasini kuzatuvchi va quruq ma'lumotni tushunarli haftalik manzaraga aylantiruvchi dashboard.",
-        meta: 'Mahsulot · 2025',
+          "Coca-Cola mahsulotlari eksporti kompaniyasi sayti: mahsulot qatori, eksport geografiyasi va ulgurji xaridorlar uchun ariza formasi.",
+        meta: 'Tijorat · 2026',
+      },
+      {
+        description:
+          "Stars va Premium sotib olish uchun Telegram mini ilovasi: balans, buyurtma oqimi, sovg'alar va bot ichidagi reyting.",
+        meta: 'Tijorat · 2025',
       },
       {
         description: "Katalog, filtrlar, savat va REST API'ga ulangan buyurtma oqimiga ega onlayn do'kon.",
@@ -391,8 +396,8 @@ const uz: Dict = {
       },
       {
         description:
-          "Qidiruv, filtrlash va batafsil sahifalari bor kino va seriallar katalogi, ochiq REST API asosida.",
-        meta: 'Mahsulot · 2024',
+          "Marketplace front-end'i: kategoriyalar katalogi, promo bloklar, qidiruv va yetkazib berish hamda narxi ko'rsatilgan mahsulot kartasi.",
+        meta: 'E-commerce · 2025',
       },
       {
         description:
@@ -408,8 +413,9 @@ const uz: Dict = {
         meta: 'Landing · 2024',
       },
       {
-        description: "Ochiq API'dagi ob-havo ilovasi: geolokatsiya, prognoz hamda aniq xato va yuklanish holatlari.",
-        meta: 'Amaliyot · 2024',
+        description:
+          "Ro'yxatlar, muddatlar va progressi bor vazifalar menejeri: hamma narsa telefonda qoladi, offlayn ham ishlaydi.",
+        meta: 'Mahsulot · 2026',
       },
     ],
   },
@@ -610,13 +616,18 @@ const ru: Dict = {
     items: [
       {
         description:
-          'Платформа автомобильных платежей и услуг для рынка Узбекистана: клиентский поток, админ-панель и типизированный API поверх PostgreSQL.',
-        meta: 'Коммерция · 2025',
+          'Онлайн-школа программирования и IT-курсов на узбекском языке: каталог курсов, поток уроков и прогресс ученика.',
+        meta: 'Коммерция · 2026',
       },
       {
         description:
-          'Дашборд, который отслеживает позиции по ключевым словам и превращает сырые данные в понятную недельную картину.',
-        meta: 'Продукт · 2025',
+          'Сайт компании-экспортёра продукции Coca-Cola: продуктовая линейка, география экспорта и форма заявки для оптовых покупателей.',
+        meta: 'Коммерция · 2026',
+      },
+      {
+        description:
+          'Telegram mini app для покупки Stars и Premium: баланс, оформление заказа, подарки и рейтинг пользователей внутри бота.',
+        meta: 'Коммерция · 2025',
       },
       {
         description: 'Интернет-магазин с каталогом, фильтрами, корзиной и оформлением заказа через REST API.',
@@ -627,8 +638,9 @@ const ru: Dict = {
         meta: 'Коммерция · 2025',
       },
       {
-        description: 'Каталог фильмов и сериалов с поиском, фильтрацией и страницами деталей на публичном REST API.',
-        meta: 'Продукт · 2024',
+        description:
+          'Фронтенд маркетплейса: каталог категорий, промо-блоки, поиск и карточка товара с доставкой и ценой.',
+        meta: 'E-commerce · 2025',
       },
       {
         description: 'Интерфейс Spotify, пересобранный с нуля: состояние плеера, плейлисты и адаптив вплоть до 320px.',
@@ -643,8 +655,9 @@ const ru: Dict = {
         meta: 'Лендинг · 2024',
       },
       {
-        description: 'Погодное приложение на публичном API: геолокация, прогноз и внятные состояния ошибки и загрузки.',
-        meta: 'Практика · 2024',
+        description:
+          'Менеджер задач со списками, дедлайнами и прогрессом: всё хранится на телефоне, работает и офлайн.',
+        meta: 'Продукт · 2026',
       },
     ],
   },
