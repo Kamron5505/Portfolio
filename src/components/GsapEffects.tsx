@@ -61,17 +61,77 @@ export default function GsapEffects() {
       }
 
       /* 2. Скролл-ревилы: всё, что обёрнуто в <Reveal> (data-reveal).
-            Начальное скрытие делает CSS-гейт, GSAP доводит до видимого. */
+            Начальное скрытие делает CSS-гейт, GSAP доводит до видимого.
+
+            Здесь именно gsap.to, а не fromTo: ScrollTrigger.refresh() (см. 2a)
+            заново вызывает onEnter, и fromTo при каждом вызове возвращал бы
+            элементы в стартовое состояние — секция гасла обратно уже после
+            того, как проявилась. to идемпотентен: повторный вызов просто
+            доводит до того же видимого состояния. */
+      const reveals = gsap.utils.toArray<HTMLElement>('[data-reveal]');
+      // Сдвиг задаём один раз; прозрачность уже 0 из CSS-гейта в globals.css.
+      gsap.set(reveals, { y: 26 });
+
       ScrollTrigger.batch('[data-reveal]', {
         start: 'top 88%',
         once: true,
         onEnter: (batch) =>
-          gsap.fromTo(
-            batch,
-            { y: 26, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.7, ease, stagger: 0.08 },
-          ),
+          gsap.to(batch, {
+            y: 0,
+            opacity: 1,
+            duration: 0.7,
+            ease,
+            stagger: 0.08,
+            overwrite: 'auto',
+          }),
       });
+
+      /* 2a. Пересчёт позиций триггеров.
+            ScrollTrigger запоминает координаты в момент создания, а высота
+            страницы после этого ещё меняется: догружаются шрифты, монтируется
+            3D-сцена, генерируется звёздный фон. Из-за устаревших координат
+            секции ниже по странице оставались скрытыми (opacity: 0) — особенно
+            заметно при заходе сразу по якорю вида /ru#quiz, когда браузер
+            прыгает вниз ещё до инициализации. */
+      const refresh = () => ScrollTrigger.refresh();
+      document.fonts?.ready.then(refresh).catch(() => {});
+      // Подстраховка для всего, что доезжает после шрифтов.
+      const refreshTimer = window.setTimeout(refresh, 1200);
+
+      /* 2c. Доводка позиции при заходе сразу по якорю (ссылкой вида
+            /ru#quiz). Браузер прыгает к секции до того, как страница примет
+            окончательную высоту, поэтому цель уезжает и заголовок оказывается
+            подрезан. Возвращаем скролл на место — но только если посетитель
+            ещё не тронул страницу сам: перехватывать чужой скролл нельзя. */
+      let userScrolled = false;
+      const markScrolled = () => {
+        userScrolled = true;
+      };
+      ['wheel', 'touchstart', 'keydown'].forEach((evt) =>
+        window.addEventListener(evt, markScrolled, { once: true, passive: true }),
+      );
+
+      const hashTimer = window.setTimeout(() => {
+        if (userScrolled) return;
+        const id = window.location.hash;
+        if (id.length < 2) return;
+        const target = document.querySelector(id);
+        if (target) gsap.to(window, { scrollTo: { y: target, offsetY: 88 }, duration: 0.4 });
+      }, 1300);
+
+      /* 2b. Последний рубеж: если что-то всё равно осталось невидимым, но уже
+            находится в кадре, показываем без анимации. Пустой экран вместо
+            контента — цена, которую платить нельзя ни при каких спецэффектах. */
+      const failsafeTimer = window.setTimeout(() => {
+        const stuck = gsap.utils
+          .toArray<HTMLElement>('[data-reveal]')
+          .filter((el) => {
+            const r = el.getBoundingClientRect();
+            const inView = r.top < window.innerHeight && r.bottom > 0;
+            return inView && Number(getComputedStyle(el).opacity) < 0.05;
+          });
+        if (stuck.length) gsap.set(stuck, { opacity: 1, y: 0 });
+      }, 2000);
 
       /* 3. Hover карточек проектов: подъём + лёгкий scale на transform,
             цветовые hover-переходы остаются на CSS. */
@@ -106,6 +166,12 @@ export default function GsapEffects() {
       document.addEventListener('click', onClick);
 
       return () => {
+        window.clearTimeout(refreshTimer);
+        window.clearTimeout(failsafeTimer);
+        window.clearTimeout(hashTimer);
+        ['wheel', 'touchstart', 'keydown'].forEach((evt) =>
+          window.removeEventListener(evt, markScrolled),
+        );
         document.removeEventListener('click', onClick);
         listeners.forEach(([card, lift, drop]) => {
           card.removeEventListener('mouseenter', lift);

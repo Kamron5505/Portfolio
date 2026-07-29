@@ -305,6 +305,7 @@ const uz: Dict = {
     { label: 'Xizmatlar', href: '#services' },
     { label: "Ko'nikmalar", href: '#skills' },
     { label: 'Loyihalar', href: '#projects' },
+    { label: 'Kviz', href: '#quiz' },
     { label: 'Aloqa', href: '#contact' },
   ],
   hero: {
@@ -543,6 +544,7 @@ const ru: Dict = {
     { label: 'Услуги', href: '#services' },
     { label: 'Навыки', href: '#skills' },
     { label: 'Проекты', href: '#projects' },
+    { label: 'Квиз', href: '#quiz' },
     { label: 'Контакты', href: '#contact' },
   ],
   hero: {

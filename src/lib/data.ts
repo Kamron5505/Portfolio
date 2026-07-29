@@ -194,5 +194,6 @@ export const NAV = [
   { label: 'Services', href: '#services' },
   { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
+  { label: 'Quiz', href: '#quiz' },
   { label: 'Contact', href: '#contact' },
 ];
