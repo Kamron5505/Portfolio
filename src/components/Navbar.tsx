@@ -94,12 +94,12 @@ export default function Navbar({
   return (
     <header
       className={`fixed inset-x-0 top-0 z-40 transition-colors duration-300 ${
-        scrolled ? 'border-b border-line bg-bg/80 backdrop-blur-md' : 'border-b border-transparent'
+        scrolled ? 'border-b border-line bg-bg/90 backdrop-blur-md' : 'border-b border-transparent bg-bg/75'
       }`}
     >
       <nav className="wrap flex h-16 items-center justify-between" aria-label="Primary">
         <a href="#top" className="font-mono text-sm font-bold tracking-tight text-ink">
-          <span className="text-accent">~/</span>kamron
+          <span className="text-accent">KF /</span> studio
           <span className="animate-blink text-accent">_</span>
         </a>
 
@@ -116,7 +116,7 @@ export default function Navbar({
             <InstallPWA label={install.button} iosHint={install.iosHint} />
             <a
               href="#contact"
-              className="rounded-md border border-accent/40 bg-accent/10 px-3.5 py-1.5 font-mono text-[13px] text-ink transition-colors hover:bg-accent/20"
+              className="rounded-md bg-accent px-3.5 py-1.5 font-mono text-[13px] text-white transition-colors hover:bg-accent/90"
             >
               {cta}
             </a>

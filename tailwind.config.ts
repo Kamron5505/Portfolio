@@ -5,15 +5,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: '#07111f',
-        surface: '#0b1a2c',
-        'surface-2': '#10233a',
-        line: 'rgba(152,190,230,0.14)',
-        ink: '#edf5ff',
-        muted: '#9aacc2',
-        faint: '#637b97',
-        accent: '#4e9dff',
-        'accent-2': '#63e0d0',
+        bg: '#f2f3ef',
+        surface: '#fbfbf8',
+        'surface-2': '#e7e9e3',
+        line: 'rgba(16, 24, 32, 0.14)',
+        ink: '#101820',
+        muted: '#59636b',
+        faint: '#879096',
+        accent: '#e35d45',
+        'accent-2': '#147d73',
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],

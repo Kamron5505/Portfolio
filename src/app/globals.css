@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   * {
@@ -20,17 +20,13 @@
 
   body {
     @apply bg-bg text-ink font-sans;
-    background-image:
-      radial-gradient(58rem 42rem at 82% -8%, rgba(56, 132, 229, 0.20), transparent 62%),
-      radial-gradient(46rem 34rem at 2% 22%, rgba(43, 194, 190, 0.08), transparent 58%),
-      linear-gradient(180deg, #07111f 0%, #091729 48%, #07111f 100%);
-    background-attachment: fixed;
+    background: #f2f3ef;
     min-height: 100vh;
   }
 
   ::selection {
-    background: rgba(99, 102, 241, 0.35);
-    color: #fff;
+    background: rgba(227, 93, 69, 0.25);
+    color: #101820;
   }
 
   :focus-visible {
@@ -45,23 +41,23 @@
     @apply mx-auto w-full max-w-content px-5 sm:px-8;
   }
 
-  /* Terminal-style section eyebrow: "01 // about" */
+  /* Compact labels keep the portfolio scannable without turning every section into a card. */
   .eyebrow {
-    @apply font-mono text-xs tracking-widest text-accent uppercase;
+    @apply font-mono text-[11px] font-semibold tracking-[0.18em] text-accent uppercase;
   }
 
   .section-title {
-    @apply font-display text-3xl sm:text-4xl font-bold tracking-tight text-ink;
+    @apply font-display text-3xl font-bold tracking-[-0.03em] text-ink sm:text-5xl;
   }
 
   .card {
-    @apply rounded-2xl border border-line bg-surface/75 backdrop-blur-xl transition-all duration-300;
-    box-shadow: 0 18px 60px rgba(0, 8, 20, 0.22), inset 0 1px 0 rgba(255,255,255,0.025);
+    @apply rounded-lg border border-line bg-surface transition-all duration-300;
+    box-shadow: 0 16px 45px rgba(16, 24, 32, 0.08);
   }
 
   .card-hover:hover {
-    @apply -translate-y-1 border-accent/40 bg-surface-2/80;
-    box-shadow: 0 22px 70px rgba(21, 97, 177, 0.14);
+    @apply -translate-y-1 border-accent/50 bg-white;
+    box-shadow: 0 22px 55px rgba(16, 24, 32, 0.12);
   }
 
   section[id] {
@@ -69,9 +65,9 @@
   }
 
   ::-webkit-scrollbar { width: 10px; }
-  ::-webkit-scrollbar-track { background: #07111f; }
-  ::-webkit-scrollbar-thumb { background: #203955; border: 3px solid #07111f; border-radius: 999px; }
-  ::-webkit-scrollbar-thumb:hover { background: #32618d; }
+  ::-webkit-scrollbar-track { background: #f2f3ef; }
+  ::-webkit-scrollbar-thumb { background: #b9c0ba; border: 3px solid #f2f3ef; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #879096; }
 
   .chip {
     @apply inline-flex items-center rounded-md border border-line bg-surface-2/60 px-2.5 py-1 font-mono text-[11px] text-muted transition-colors;
@@ -83,10 +79,10 @@
 
   .grid-bg {
     background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size: 44px 44px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+      linear-gradient(to right, rgba(16, 24, 32, 0.055) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(16, 24, 32, 0.055) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 74%);
   }
 
   /* Анимируемые GSAP-ом элементы (GsapEffects.tsx) прячем до старта интро,
