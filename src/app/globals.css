@@ -21,9 +21,11 @@
   body {
     @apply bg-bg text-ink font-sans;
     background-image:
-      radial-gradient(60rem 40rem at 80% -10%, rgba(99, 102, 241, 0.10), transparent 60%),
-      radial-gradient(50rem 30rem at 0% 10%, rgba(34, 211, 238, 0.06), transparent 55%);
+      radial-gradient(58rem 42rem at 82% -8%, rgba(56, 132, 229, 0.20), transparent 62%),
+      radial-gradient(46rem 34rem at 2% 22%, rgba(43, 194, 190, 0.08), transparent 58%),
+      linear-gradient(180deg, #07111f 0%, #091729 48%, #07111f 100%);
     background-attachment: fixed;
+    min-height: 100vh;
   }
 
   ::selection {
@@ -53,12 +55,23 @@
   }
 
   .card {
-    @apply rounded-xl border border-line bg-surface/70 backdrop-blur-sm transition-colors duration-300;
+    @apply rounded-2xl border border-line bg-surface/75 backdrop-blur-xl transition-all duration-300;
+    box-shadow: 0 18px 60px rgba(0, 8, 20, 0.22), inset 0 1px 0 rgba(255,255,255,0.025);
   }
 
   .card-hover:hover {
-    @apply border-accent/40 bg-surface-2/70;
+    @apply -translate-y-1 border-accent/40 bg-surface-2/80;
+    box-shadow: 0 22px 70px rgba(21, 97, 177, 0.14);
   }
+
+  section[id] {
+    scroll-margin-top: 5.5rem;
+  }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #07111f; }
+  ::-webkit-scrollbar-thumb { background: #203955; border: 3px solid #07111f; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #32618d; }
 
   .chip {
     @apply inline-flex items-center rounded-md border border-line bg-surface-2/60 px-2.5 py-1 font-mono text-[11px] text-muted transition-colors;

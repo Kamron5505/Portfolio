@@ -2,7 +2,6 @@ import { FiArrowUpRight, FiDownload, FiMapPin } from 'react-icons/fi';
 import type { SiteInfo, SocialItem, UiText } from '@/lib/content';
 import SocialIcon from './SocialIcon';
 import Avatar from './Avatar';
-import HeroObject from './HeroObject';
 
 export default function Hero({
   site,
@@ -16,11 +15,8 @@ export default function Hero({
   return (
     <section id="top" className="relative overflow-hidden pt-28 sm:pt-36">
       <div aria-hidden className="pointer-events-none absolute inset-0 grid-bg" />
-
-      {/* Интерактивный 3D-кристалл: на широких экранах уходит вправо, под
-          текстовой колонкой остаётся только рассеянное свечение, поэтому
-          заголовок не теряет контраст. */}
-      <HeroObject className="absolute inset-0 opacity-45 sm:opacity-60 lg:opacity-100" />
+      <div aria-hidden className="pointer-events-none absolute -right-28 top-20 h-[30rem] w-[30rem] rounded-full bg-accent/10 blur-[110px]" />
+      <div aria-hidden className="pointer-events-none absolute right-[16%] top-40 h-48 w-48 rounded-full border border-accent/10" />
 
       <div className="wrap relative">
         <div className="grid items-center gap-12 lg:grid-cols-[1.4fr_0.9fr]">
