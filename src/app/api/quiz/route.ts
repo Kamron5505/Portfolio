@@ -69,14 +69,14 @@ const LANGUAGE: Record<Locale, string> = {
  * Ошибка отправки не должна ломать ответ: консультацию человек уже ждёт, и
  * недоступность Telegram — не его проблема.
  */
-async function notifyTelegram(locale: Locale, answers: Answer[]) {
+async function notifyTelegram(locale: Locale, answers: Answer[], report: string) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) return;
 
   const escape = (s: string) => s.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c]!);
   const lines = answers.map((a) => `<b>${escape(a.question)}</b>\n${escape(a.answer)}`);
-  const text = [`🧩 <b>Квиз пройден</b> · язык: ${locale}`, '', ...lines].join('\n\n');
+  const text = [`🧩 <b>Квиз пройден</b> · язык: ${locale}`, '', ...lines, '', '<b>Полный разбор для владельца</b>', escape(report)].join('\n\n');
 
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -177,6 +177,7 @@ export async function POST(req: NextRequest) {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
         body: payload,
+        signal: AbortSignal.timeout(25_000),
       });
 
       if (!response.ok) {
@@ -200,7 +201,7 @@ export async function POST(req: NextRequest) {
       if (text) {
         // Лид отправляем до ответа: на serverless функция засыпает сразу после
         // возврата, и «отложенный» fetch мог бы не уйти вовсе.
-        await notifyTelegram(locale, answers);
+        await notifyTelegram(locale, answers, text);
         return NextResponse.json({ ok: true, text });
       }
       console.error(`[quiz] ${model} вернул пустой ответ`);
