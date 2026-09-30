@@ -21,7 +21,7 @@ function linkLabel(href: string): string {
 
 export default function Projects({ ui, projects }: { ui: UiText; projects: ProjectItem[] }) {
   return (
-    <section id="projects" className="scroll-mt-24 py-24">
+    <section id="projects" className="editorial-section project-field scroll-mt-24 py-24">
       <div className="wrap">
         <SectionHeading index="04" eyebrow={ui.projects.eyebrow} title={ui.projects.title} />
 
