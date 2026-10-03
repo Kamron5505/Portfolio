@@ -52,9 +52,9 @@ export const SITE = {
   firstName: 'Kamron',
   lastName: 'Fazilov',
   initials: 'KF',
-  role: 'Frontend Developer',
-  subRole: 'Moving into Full Stack',
-  tagline: 'I build fast, responsive websites for business.',
+  role: 'AI Agent Prototyping & Web Development',
+  subRole: 'Frontend Developer · growing into full stack',
+  tagline: 'I prototype practical AI agents and build web experiences for business.',
   location: 'Tashkent, Uzbekistan',
   email: 'kama58077@gmail.com',
   // Фото по умолчанию — лежит в public/ и коммитится в репозиторий, поэтому

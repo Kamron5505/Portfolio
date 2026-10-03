@@ -80,6 +80,8 @@ export type Dict = {
   nav: { label: string; href: string }[];
   hero: {
     available: string;
+    headline: string;
+    auditCta: string;
     intro: string;
     getInTouch: string;
     viewWork: string;
@@ -114,19 +116,20 @@ export type Dict = {
 const en: Dict = {
   meta: {
     title: `${SITE.name} — ${SITE.role} in Tashkent`,
-    description: `${SITE.name} — frontend developer in ${SITE.location}. Landing pages, corporate sites, online stores and admin panels with React, Next.js and TypeScript.`,
+    description: `${SITE.name} — web developer and AI agent prototyper in ${SITE.location}. Practical AI agents, integrations and business websites.`,
     ogLocale: 'en_US',
   },
-  role: SITE.role,
-  subRole: SITE.subRole,
-  tagline: SITE.tagline,
+  role: 'AI agent prototyping & web development',
+  subRole: 'Frontend developer · growing into full stack',
+  tagline: 'I prototype practical AI agents and build web experiences for business.',
   location: SITE.location,
   skipToContent: 'Skip to content',
   nav: NAV,
   hero: {
     available: 'Available for freelance & remote work',
-    intro:
-      'I design and build responsive sites with React, Next.js and TypeScript, from a one-page landing to a store with an admin panel.',
+    headline: 'AI agents and web tools that make business workflows simpler.',
+    auditCta: 'Start an AI audit',
+    intro: 'I prototype AI-assisted workflows and build responsive sites with React, Next.js and TypeScript.',
     getInTouch: 'Get in touch',
     viewWork: 'View projects',
     downloadCv: 'Download CV',
@@ -292,12 +295,12 @@ const en: Dict = {
 const uz: Dict = {
   meta: {
     title: `${SITE.name} — Toshkentdagi Frontend dasturchi`,
-    description: `${SITE.name} — Toshkentdagi frontend dasturchi. Landing, korporativ saytlar, onlayn do'konlar va admin panellar: React, Next.js, TypeScript.`,
+    description: `${SITE.name} — Toshkentdagi web dasturchi va AI agent prototiplovchi. Biznes uchun AI agentlar, integratsiyalar va saytlar.`,
     ogLocale: 'uz_UZ',
   },
-  role: 'Frontend dasturchi',
-  subRole: 'Full Stack tomon ketyapman',
-  tagline: 'Biznes uchun tez va moslashuvchan saytlar quraman.',
+  role: 'AI agent prototiplash va web dasturlash',
+  subRole: 'Frontend dasturchi · full stack tomon rivojlanyapman',
+  tagline: 'Biznes jarayonlari uchun amaliy AI agentlar va web yechimlar prototipini yarataman.',
   location: "Toshkent, O'zbekiston",
   skipToContent: "Kontentga o'tish",
   nav: [
@@ -310,8 +313,9 @@ const uz: Dict = {
   ],
   hero: {
     available: 'Frilans va masofaviy ishlar uchun ochiqman',
-    intro:
-      "React, Next.js va TypeScript'da moslashuvchan saytlar quraman: oddiy landingdan admin paneli bor do'konigacha.",
+    headline: 'Biznes jarayonlarini soddalashtiradigan AI agentlar va web yechimlar.',
+    auditCta: 'AI tahlilni boshlash',
+    intro: "AI yordamidagi ish jarayonlarini prototiplayman va React, Next.js hamda TypeScript'da saytlar quraman.",
     getInTouch: "Bog'lanish",
     viewWork: "Loyihalarni ko'rish",
     downloadCv: 'CV yuklab olish',
@@ -537,12 +541,12 @@ const ru: Dict = {
   meta: {
     title: `Камрон Фазилов (${SITE.name}) — Frontend-разработчик в Ташкенте`,
     description:
-      'Камрон Фазилов — frontend-разработчик из Ташкента. Лендинги, корпоративные сайты, интернет-магазины и админ-панели на React, Next.js и TypeScript.',
+      'Камрон Фазилов — веб-разработчик и создатель прототипов ИИ-агентов в Ташкенте. ИИ-агенты, интеграции и сайты для бизнеса.',
     ogLocale: 'ru_RU',
   },
-  role: 'Frontend-разработчик',
-  subRole: 'Перехожу в Full Stack',
-  tagline: 'Делаю быстрые адаптивные сайты для бизнеса.',
+  role: 'Прототипирование ИИ-агентов и веб-разработка',
+  subRole: 'Frontend-разработчик · развиваюсь в Full Stack',
+  tagline: 'Создаю прототипы практичных ИИ-агентов и веб-решения для бизнеса.',
   location: 'Ташкент, Узбекистан',
   skipToContent: 'К содержимому',
   nav: [
@@ -555,8 +559,9 @@ const ru: Dict = {
   ],
   hero: {
     available: 'Открыт к фрилансу и удалённой работе',
-    intro:
-      'Проектирую и собираю адаптивные сайты на React, Next.js и TypeScript: от лендинга до магазина с админ-панелью.',
+    headline: 'ИИ-агенты и веб-инструменты, упрощающие бизнес-процессы.',
+    auditCta: 'Начать ИИ-аудит',
+    intro: 'Прототипирую процессы с ИИ и создаю адаптивные сайты на React, Next.js и TypeScript.',
     getInTouch: 'Связаться',
     viewWork: 'Смотреть проекты',
     downloadCv: 'Скачать CV',

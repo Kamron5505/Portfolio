@@ -32,11 +32,11 @@ export default function Hero({
             </h1>
 
             <p data-hero-item className="mt-7 max-w-2xl text-xl font-medium leading-snug text-ink sm:text-2xl">
-              Websites that make a business clearer, more credible and easier to buy from.
+              {ui.hero.headline}
             </p>
 
             <p data-hero-item className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-              {ui.tagline} {ui.hero.intro}
+              {ui.hero.intro}
             </p>
 
             <div data-hero-item className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs text-faint">
@@ -52,7 +52,7 @@ export default function Hero({
                 href="#quiz"
                 className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-3.5 font-medium text-white transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/25"
               >
-                Start an AI audit <FiArrowUpRight aria-hidden="true" />
+                {ui.hero.auditCta} <FiArrowUpRight aria-hidden="true" />
               </a>
               <a
                 href="#projects"
