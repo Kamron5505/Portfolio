@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   * {
@@ -20,13 +20,13 @@
 
   body {
     @apply bg-bg text-ink font-sans;
-    background: #f2f3ef;
+    background: #0b0f12;
     min-height: 100vh;
   }
 
   ::selection {
-    background: rgba(227, 93, 69, 0.25);
-    color: #101820;
+    background: rgba(185, 255, 106, 0.28);
+    color: #f4f1e8;
   }
 
   :focus-visible {
@@ -51,13 +51,13 @@
   }
 
   .card {
-    @apply rounded-lg border border-line bg-surface transition-all duration-300;
-    box-shadow: 0 16px 45px rgba(16, 24, 32, 0.08);
+    @apply rounded-md border border-line bg-surface transition-all duration-300;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
   }
 
   .card-hover:hover {
-    @apply -translate-y-1 border-accent/50 bg-white;
-    box-shadow: 0 22px 55px rgba(16, 24, 32, 0.12);
+    @apply -translate-y-1 border-accent/60 bg-surface-2;
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
   }
 
   section[id] {
@@ -65,9 +65,9 @@
   }
 
   ::-webkit-scrollbar { width: 10px; }
-  ::-webkit-scrollbar-track { background: #f2f3ef; }
-  ::-webkit-scrollbar-thumb { background: #b9c0ba; border: 3px solid #f2f3ef; border-radius: 999px; }
-  ::-webkit-scrollbar-thumb:hover { background: #879096; }
+  ::-webkit-scrollbar-track { background: #0b0f12; }
+  ::-webkit-scrollbar-thumb { background: #334148; border: 3px solid #0b0f12; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #b9ff6a; }
 
   .chip {
     @apply inline-flex items-center rounded-md border border-line bg-surface-2/60 px-2.5 py-1 font-mono text-[11px] text-muted transition-colors;
@@ -79,10 +79,18 @@
 
   .grid-bg {
     background-image:
-      linear-gradient(to right, rgba(16, 24, 32, 0.055) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(16, 24, 32, 0.055) 1px, transparent 1px);
+      linear-gradient(to right, rgba(244, 241, 232, 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(244, 241, 232, 0.07) 1px, transparent 1px);
     background-size: 36px 36px;
-    mask-image: linear-gradient(to bottom, #000 0%, transparent 74%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
+  }
+
+  .rule-label {
+    @apply font-mono text-[10px] uppercase tracking-[0.2em] text-faint;
+  }
+
+  .display-balance {
+    text-wrap: balance;
   }
 
   /* Анимируемые GSAP-ом элементы (GsapEffects.tsx) прячем до старта интро,

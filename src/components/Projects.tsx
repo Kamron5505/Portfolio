@@ -4,117 +4,46 @@ import type { ProjectItem, UiText } from '@/lib/content';
 import SectionHeading from './SectionHeading';
 import Reveal from './Reveal';
 
-/**
- * Короткая подпись для бейджа «Live»: посетитель должен видеть, куда ведёт
- * карточка, до клика. Домен читается лучше полного адреса, а телеграм-бота
- * узнают по хэндлу, а не по хосту t.me.
- */
-function linkLabel(href: string): string {
+function linkLabel(href: string) {
   try {
     const url = new URL(href);
-    if (url.hostname === 't.me') return `@${url.pathname.replace(/^\//, '')}`;
-    return url.hostname.replace(/^www\./, '');
-  } catch {
-    return href;
-  }
+    return url.hostname === 't.me' ? `@${url.pathname.replace(/^\//, '')}` : url.hostname.replace(/^www\./, '');
+  } catch { return href; }
 }
 
 export default function Projects({ ui, projects }: { ui: UiText; projects: ProjectItem[] }) {
   return (
-    <section id="projects" className="scroll-mt-24 py-24">
+    <section id="projects" className="scroll-mt-24 py-20 sm:py-28">
       <div className="wrap">
-        <SectionHeading index="04" eyebrow={ui.projects.eyebrow} title={ui.projects.title} />
+        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+          <SectionHeading index="04" eyebrow={ui.projects.eyebrow} title="Selected work with a job to do." />
+          <p className="max-w-xs pb-10 text-sm leading-relaxed text-muted md:pb-0">Interfaces, commerce and automation shipped for real products and real people.</p>
+        </div>
 
-        <ul className="grid list-none gap-4 p-0 md:grid-cols-2">
+        <ul className="grid list-none gap-4 p-0 sm:grid-cols-2">
           {projects.map((project, i) => {
-            // Ссылка есть не у каждого проекта. Раньше пустой href превращался
-            // в «#» — клик по карточке дёргал страницу вверх, а краулер видел
-            // ссылку в никуда. Без адреса карточка просто не кликабельна.
-            const Card = project.href ? 'a' : 'div';
-            const linkProps = project.href
-              ? { href: project.href, target: '_blank', rel: 'noopener noreferrer' }
-              : {};
-
+            const Wrapper = project.href ? 'a' : 'div';
+            const props = project.href ? { href: project.href, target: '_blank', rel: 'noopener noreferrer' } : {};
             return (
-            <Reveal
-              as="li"
-              key={project.id}
-              delay={i * 0.06}
-              className={project.featured ? 'md:col-span-2' : ''}
-            >
-              <Card
-                {...linkProps}
-                className={`card card-hover group flex h-full overflow-hidden ${
-                  // Карточка на всю ширину с обложкой 16:9 занимала бы почти
-                  // весь экран по высоте. На десктопе раскладываем её в строку:
-                  // обложка слева, текст справа — высоту задаёт текст.
-                  project.featured ? 'flex-col md:flex-row' : 'flex-col'
-                }`}
-              >
-                {/* Обложка есть не у каждого проекта; без неё карточка просто плотнее. */}
-                {project.cover && (
-                  <div
-                    className={`relative w-full shrink-0 overflow-hidden border-line bg-surface-2 ${
-                      project.featured
-                        ? 'aspect-[16/9] border-b md:aspect-auto md:min-h-[19rem] md:w-[55%] md:border-b-0 md:border-r'
-                        : 'aspect-[16/9] border-b'
-                    }`}
-                  >
-                    <Image
-                      src={project.cover}
-                      alt={`${project.name}${project.meta ? ` — ${project.meta}` : ''}`}
-                      fill
-                      sizes={project.featured ? '(max-width: 768px) 100vw, 55vw' : '(max-width: 768px) 100vw, 50vw'}
-                      // Секция всегда ниже первого экрана — обложки лениво.
-                      loading="lazy"
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    />
+              <Reveal as="li" key={project.id} delay={i * 0.04} className={project.featured ? 'sm:col-span-2' : ''}>
+                <Wrapper {...props} className="group block h-full border-t border-line pt-4">
+                  {project.cover && (
+                    <div className={`relative mb-5 overflow-hidden border border-line bg-surface-2 ${project.featured ? 'aspect-[2.2/1]' : 'aspect-[1.55/1]'}`}>
+                      <Image src={project.cover} alt={project.name} fill sizes={project.featured ? '(max-width: 640px) 100vw, 100vw' : '(max-width: 640px) 100vw, 50vw'} loading="lazy" className="object-cover transition duration-700 group-hover:scale-[1.03]" />
+                      <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center bg-bg/85 text-ink opacity-0 transition-opacity group-hover:opacity-100"><FiArrowUpRight size={17} aria-hidden="true" /></span>
+                    </div>
+                  )}
+                  <div className="flex items-start justify-between gap-5">
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent">{project.meta ?? 'Selected work'}</p>
+                      <h3 className="mt-2 font-display text-2xl font-bold tracking-tight text-ink">{project.name}</h3>
+                    </div>
+                    {project.href && <span className="mt-1 hidden font-mono text-[10px] text-faint sm:block">{linkLabel(project.href)}</span>}
                   </div>
-                )}
-
-                <div className="flex flex-1 flex-col p-6">
-                  <h3 className="mb-3 font-display text-xl font-bold text-ink">{project.name}</h3>
-
-                  {project.meta && (
-                    <p className="mb-3 font-mono text-[11px] uppercase tracking-wider text-accent-2">
-                      {project.meta}
-                    </p>
-                  )}
-
-                  {/* Бейдж живой ссылки. Карточка целиком уже <a>, поэтому это
-                      span, а не вложенная ссылка — иначе была бы невалидная
-                      вёрстка и два разных таргета клика. */}
-                  {project.href && (
-                    <span className="mb-4 inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-line bg-surface-2/60 py-1 pl-2.5 pr-3 font-mono text-[11px] text-muted transition-colors group-hover:border-accent/40 group-hover:text-ink">
-                      <span className="relative flex h-2 w-2 shrink-0">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-2 opacity-75" />
-                        <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-2" />
-                      </span>
-                      <span className="shrink-0 uppercase tracking-wider">Live</span>
-                      <span aria-hidden="true" className="shrink-0 text-faint">
-                        ·
-                      </span>
-                      <span className="truncate">{linkLabel(project.href)}</span>
-                      <FiArrowUpRight
-                        aria-hidden="true"
-                        className="shrink-0 text-faint transition-colors group-hover:text-accent"
-                        size={14}
-                      />
-                    </span>
-                  )}
-
-                  <p className="mb-5 flex-1 leading-relaxed text-muted">{project.description}</p>
-
-                  <ul className="flex flex-wrap gap-2">
-                    {project.tags.map((tag) => (
-                      <li key={tag} className="chip">
-                        {tag}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Card>
-            </Reveal>
+                  <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">{project.description}</p>
+                  <ul className="mt-4 flex flex-wrap gap-2">{project.tags.map((tag) => <li key={tag} className="chip">{tag}</li>)}</ul>
+                </Wrapper>
+              </Reveal>
             );
           })}
         </ul>

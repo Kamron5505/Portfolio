@@ -27,7 +27,7 @@ export default function GlobalError({ reset }: { error: Error & { digest?: strin
             <button
               type="button"
               onClick={reset}
-              className="mt-8 inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 font-medium text-white transition-transform hover:-translate-y-0.5"
+              className="mt-8 inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 font-medium text-bg transition-transform hover:-translate-y-0.5"
             >
               Try again
             </button>

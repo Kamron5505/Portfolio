@@ -116,7 +116,7 @@ export default function Navbar({
             <InstallPWA label={install.button} iosHint={install.iosHint} />
             <a
               href="#contact"
-              className="rounded-md bg-accent px-3.5 py-1.5 font-mono text-[13px] text-white transition-colors hover:bg-accent/90"
+              className="rounded-md bg-accent px-3.5 py-1.5 font-mono text-[13px] text-bg transition-colors hover:bg-accent/90"
             >
               {cta}
             </a>

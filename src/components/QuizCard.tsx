@@ -304,7 +304,7 @@ export default function QuizCard({
               <button
                 type="submit"
                 disabled={draft.trim().length === 0}
-                className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-accent px-4 py-3 text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/30 disabled:pointer-events-none disabled:opacity-40 sm:px-5"
+                className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-accent px-4 py-3 text-sm font-medium text-bg transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/30 disabled:pointer-events-none disabled:opacity-40 sm:px-5"
               >
                 {text.send}
                 <FiArrowUpRight size={16} aria-hidden="true" />
@@ -329,7 +329,7 @@ export default function QuizCard({
             <div className="flex flex-wrap items-center gap-3">
               <a
                 href={contactHref}
-                className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-sm font-medium text-white transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/30"
+                className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-sm font-medium text-bg transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/30"
               >
                 {text.done.cta} <FiArrowUpRight size={16} aria-hidden="true" />
               </a>

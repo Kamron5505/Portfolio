@@ -1,7 +1,7 @@
-import { FiArrowUpRight, FiCheck, FiDownload, FiMapPin, FiZap } from 'react-icons/fi';
+import Image from 'next/image';
+import { FiArrowUpRight, FiDownload, FiMapPin } from 'react-icons/fi';
 import type { SiteInfo, SocialItem, UiText } from '@/lib/content';
 import SocialIcon from './SocialIcon';
-import Avatar from './Avatar';
 
 export default function Hero({
   site,
@@ -15,124 +15,68 @@ export default function Hero({
   return (
     <section id="top" className="relative overflow-hidden border-b border-line pt-24 sm:pt-28">
       <div aria-hidden className="pointer-events-none absolute inset-0 grid-bg" />
+      <div className="wrap relative pb-14 sm:pb-20">
+        <div className="mb-10 flex items-center justify-between border-b border-line pb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-faint sm:mb-16">
+          <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-accent" /> Available for selected projects</span>
+          <span className="hidden sm:inline">Tashkent / Worldwide</span>
+        </div>
 
-      <div className="wrap relative pb-20 sm:pb-28">
-        <div className="grid items-end gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        <div className="grid items-end gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10">
           <div>
-            <p data-hero-item className="eyebrow mb-7 flex items-center gap-2">
-              <span className="inline-flex h-2 w-2 rounded-full bg-accent-2" />
-              {ui.hero.available}
-            </p>
-
-            <h1
-              data-hero-title
-              className="max-w-3xl font-display text-[clamp(3.4rem,9vw,7.7rem)] font-bold leading-[0.88] tracking-[-0.07em]"
-            >
-              {site.name}
+            <p data-hero-item className="eyebrow mb-5">Independent developer / AI systems</p>
+            <h1 data-hero-title className="display-balance max-w-4xl font-display text-[clamp(4rem,10vw,9.5rem)] font-bold leading-[0.82] tracking-[-0.08em] text-ink">
+              Kamron<br /><span className="text-accent">Fazilov</span>
             </h1>
-
-            <p data-hero-item className="mt-7 max-w-2xl text-xl font-medium leading-snug text-ink sm:text-2xl">
-              Websites that make a business clearer, more credible and easier to buy from.
-            </p>
-
-            <p data-hero-item className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-              {ui.tagline} {ui.hero.intro}
-            </p>
-
-            <div data-hero-item className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs text-faint">
-              <span className="inline-flex items-center gap-2">
-                <FiMapPin size={14} aria-hidden="true" /> {ui.location}
-              </span>
-              <span className="text-accent">{ui.role}</span>
-              <span>{ui.subRole}</span>
+            <div data-hero-item className="mt-8 grid max-w-2xl gap-5 border-l-2 border-accent pl-5 sm:grid-cols-[1fr_0.8fr] sm:gap-8">
+              <p className="text-xl font-medium leading-tight text-ink sm:text-2xl">
+                Websites and AI workflows that turn attention into action.
+              </p>
+              <p className="text-sm leading-relaxed text-muted">
+                {ui.tagline} {ui.hero.intro}
+              </p>
             </div>
 
-            <div data-hero-item className="mt-8 flex flex-wrap items-center gap-3">
-              <a
-                href="#quiz"
-                className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-3.5 font-medium text-white transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/25"
-              >
-                Start an AI audit <FiArrowUpRight aria-hidden="true" />
+            <div data-hero-item className="mt-9 flex flex-wrap items-center gap-3">
+              <a href="#quiz" className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-3.5 font-medium text-bg transition-transform hover:-translate-y-0.5">
+                Run a business audit <FiArrowUpRight aria-hidden="true" />
               </a>
-              <a
-                href="#projects"
-                className="inline-flex items-center gap-2 rounded-md border border-line bg-surface px-5 py-3.5 font-medium text-ink transition-colors hover:border-accent/50 hover:bg-surface-2"
-              >
-                {ui.hero.viewWork} <FiArrowUpRight aria-hidden="true" />
+              <a href="#projects" className="inline-flex items-center gap-2 rounded-md border border-line bg-surface px-5 py-3.5 font-medium text-ink transition-colors hover:border-accent/60 hover:bg-surface-2">
+                View selected work <FiArrowUpRight aria-hidden="true" />
               </a>
               {site.cv && (
-                <a
-                  href={site.cv}
-                  download
-                  aria-label={ui.hero.downloadCv}
-                  className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-line bg-surface text-ink transition-colors hover:border-accent/50 hover:bg-surface-2"
-                >
+                <a href={site.cv} download aria-label={ui.hero.downloadCv} className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-line bg-surface text-ink transition-colors hover:border-accent/60 hover:text-accent">
                   <FiDownload size={17} aria-hidden="true" />
                 </a>
               )}
             </div>
 
-            <ul data-hero-item className="mt-8 flex flex-wrap items-center gap-2">
-              {socials.map((s) => (
-                <li key={s.id}>
-                  <a
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.label}
-                    className="flex h-9 w-9 items-center justify-center rounded-md border border-line bg-surface text-muted transition-colors hover:border-accent/50 hover:text-accent"
-                  >
-                    <SocialIcon name={s.icon} size={16} />
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div data-hero-item className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-line pt-5 font-mono text-[11px] text-faint">
+              <span className="inline-flex items-center gap-2"><FiMapPin size={14} aria-hidden="true" /> {ui.location}</span>
+              <span className="text-accent">{ui.role}</span>
+              <ul className="flex items-center gap-3">
+                {socials.map((s) => (
+                  <li key={s.id}><a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={s.label} className="text-faint transition-colors hover:text-accent"><SocialIcon name={s.icon} size={15} /></a></li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          <div data-hero-item className="relative mx-auto w-full max-w-[470px] lg:mx-0 lg:justify-self-end">
-            <div className="mb-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-faint">
-              <span>AI business audit</span>
-              <span className="text-accent-2">Live brief</span>
+          <div data-hero-item className="relative mx-auto w-full max-w-[430px] lg:mx-0 lg:justify-self-end">
+            <div className="absolute -left-4 top-8 z-10 hidden border border-line bg-bg px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-accent sm:block">
+              <span className="mr-2 text-faint">01</span> Strategy first
             </div>
-            <div className="card overflow-hidden">
-              <div className="flex items-center justify-between border-b border-line px-5 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-line bg-surface-2">
-                    <Avatar src={site.avatar} alt={`${site.name} — ${ui.role}`} initials={site.initials} />
-                  </div>
-                  <div>
-                    <p className="font-display text-lg font-bold text-ink">From brief to build</p>
-                    <p className="font-mono text-[11px] text-faint">strategy / design / code</p>
-                  </div>
+            <div className="relative aspect-[0.82] overflow-hidden border border-line bg-surface">
+              <Image src={site.avatar} alt={`${site.name} — ${ui.role}`} fill priority sizes="(max-width: 1024px) 80vw, 34vw" className="object-cover object-center" />
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between border-t border-white/15 bg-bg/75 p-4 backdrop-blur-sm">
+                <div>
+                  <p className="font-display text-lg font-bold text-ink">From brief to build</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-faint">audit / interface / launch</p>
                 </div>
-                <FiZap className="text-accent" size={21} aria-hidden="true" />
+                <span className="font-mono text-xs text-accent">KF / 26</span>
               </div>
-
-              <div className="space-y-5 p-5 sm:p-6">
-                <p className="max-w-sm text-sm leading-relaxed text-muted">
-                  The audit finds the gaps between what a business offers and what a new customer needs to trust it.
-                </p>
-                <ul className="space-y-3 border-l-2 border-accent pl-4">
-                  {['Offer and positioning', 'Customer journey', 'Site structure and content', 'AI and automation fit'].map((item) => (
-                    <li key={item} className="flex items-center gap-2 text-sm text-ink">
-                      <FiCheck className="shrink-0 text-accent-2" size={15} aria-hidden="true" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <div className="grid grid-cols-3 gap-2 border-t border-line pt-5">
-                  {[
-                    ['01', 'Discover'],
-                    ['02', 'Design'],
-                    ['03', 'Launch'],
-                  ].map(([number, label]) => (
-                    <div key={number}>
-                      <p className="font-mono text-xs text-accent">{number}</p>
-                      <p className="mt-1 text-sm font-medium text-ink">{label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            </div>
+            <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
+              <span>Frontend / Full-stack path</span><span>Scroll to explore ↓</span>
             </div>
           </div>
         </div>

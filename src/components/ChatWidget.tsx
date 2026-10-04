@@ -411,7 +411,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
                 type="submit"
                 aria-label={t.send}
                 disabled={sending || !draft.trim()}
-                className="rounded-lg bg-accent p-2.5 text-white transition-opacity disabled:opacity-40"
+                className="rounded-lg bg-accent p-2.5 text-bg transition-opacity disabled:opacity-40"
               >
                 <FiSend size={16} aria-hidden="true" />
               </button>
@@ -431,7 +431,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
                 <button
                   type="submit"
                   disabled={!nameDraft.trim()}
-                  className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-white transition-opacity disabled:opacity-40"
+                  className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-bg transition-opacity disabled:opacity-40"
                 >
                   {t.nameSubmit}
                 </button>
@@ -446,7 +446,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
         type="button"
         onClick={toggle}
         aria-label={open ? t.close : t.open}
-        className="fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-white shadow-lg shadow-accent/30 transition-transform hover:-translate-y-0.5 hover:shadow-xl hover:shadow-accent/40 sm:right-6"
+        className="fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-bg shadow-lg shadow-accent/30 transition-transform hover:-translate-y-0.5 hover:shadow-xl hover:shadow-accent/40 sm:right-6"
       >
         {open ? <FiX size={24} aria-hidden="true" /> : <FiMessageCircle size={24} aria-hidden="true" />}
         {!open && unread > 0 && (
