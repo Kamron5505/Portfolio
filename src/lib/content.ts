@@ -40,7 +40,7 @@ export type UiText = {
   location: string;
   skipToContent: string;
   nav: { label: string; href: string }[];
-  hero: { available: string; intro: string; getInTouch: string; viewWork: string; downloadCv: string };
+  hero: { available: string; headline: string; auditCta: string; intro: string; getInTouch: string; viewWork: string; downloadCv: string };
   about: { eyebrow: string; title: string; paragraphs: string[] };
   services: { eyebrow: string; title: string };
   skills: { eyebrow: string; title: string };
