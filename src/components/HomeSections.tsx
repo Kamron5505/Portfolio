@@ -34,8 +34,8 @@ export default async function HomeSections({ locale }: { locale: Locale }) {
     <>
       <Navbar locale={locale} nav={nav} cta={ui.hero.getInTouch} install={ui.install} />
       <main id="main">
-        <Hero site={site} ui={ui} socials={socials} />
-        <About ui={ui} />
+        <Hero site={site} ui={ui} socials={socials} services={services} />
+        <About site={site} ui={ui} />
         <Services ui={ui} services={services} />
         <Skills ui={ui} skills={skills} />
         <Projects ui={ui} projects={projects} />

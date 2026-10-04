@@ -2,7 +2,8 @@ import '@/app/globals.css';
 import ChatWidget from '@/components/ChatWidget';
 import DevSwCleanup from '@/components/DevSwCleanup';
 import GsapEffects from '@/components/GsapEffects';
-import StarryBackground from '@/components/StarryBackground';
+import SmoothScroll from '@/components/SmoothScroll';
+import VisitTracker from '@/components/VisitTracker';
 import { fontVariables } from '@/lib/fonts';
 import { getContent } from '@/lib/content';
 import { type Locale } from '@/lib/i18n';
@@ -20,9 +21,8 @@ export default async function RootDocument({
   const { site, ui, socials } = await getContent(locale);
 
   return (
-    <html lang={locale} className={fontVariables}>
+    <html lang={locale} className={`dark ${fontVariables}`}>
       <body className="antialiased">
-        <StarryBackground />
         {/* JSON-LD лежит в <body> — для Google/Яндекса это равнозначно, зато не
             приходится вручную собирать <head> внутри компонента. */}
         {buildSchemas(site, ui, socials, locale).map((schema, i) => (
@@ -40,6 +40,8 @@ export default async function RootDocument({
         </a>
         {children}
         <ChatWidget locale={locale} />
+        <SmoothScroll />
+        <VisitTracker locale={locale} />
         <GsapEffects />
         {process.env.NODE_ENV === 'development' && <DevSwCleanup />}
       </body>

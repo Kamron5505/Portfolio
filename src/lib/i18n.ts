@@ -87,12 +87,15 @@ export type Dict = {
     viewWork: string;
     downloadCv: string;
   };
-  about: { eyebrow: string; title: string; paragraphs: string[] };
+  about: { eyebrow: string; title: string; paragraphs: string[]; principles: [string, string][] };
+  quizCards: [string, string][];
   services: {
     eyebrow: string;
     title: string;
     items: { title: string; description: string }[];
+    funnel: { title: string; note: string; stages: string[] };
   };
+  carousel: { prev: string; next: string };
   skills: { eyebrow: string; title: string; groupTitles: string[] };
   projects: {
     eyebrow: string;
@@ -116,64 +119,66 @@ export type Dict = {
 const en: Dict = {
   meta: {
     title: `${SITE.name} — ${SITE.role} in Tashkent`,
-    description: `${SITE.name} — web developer and AI agent prototyper in ${SITE.location}. Practical AI agents, integrations and business websites.`,
+    description: `${SITE.name} — AI agent developer in ${SITE.location}. AI agents, Telegram bots and websites for business, built with Claude, GPT and open-source LLMs.`,
     ogLocale: 'en_US',
   },
-  role: 'AI agent prototyping & web development',
-  subRole: 'Frontend developer · growing into full stack',
-  tagline: 'I prototype practical AI agents and build web experiences for business.',
+  role: 'AI agents for business',
+  subRole: 'AI agent developer · Telegram bots · websites',
+  tagline: 'I build AI agents, Telegram bots and websites that take routine work off a business.',
   location: SITE.location,
   skipToContent: 'Skip to content',
   nav: NAV,
   hero: {
     available: 'Available for freelance & remote work',
-    headline: 'AI agents and web tools that make business workflows simpler.',
+    headline: 'AI agents that answer clients, catch leads and run routine work — while you run the business.',
     auditCta: 'Start an AI audit',
-    intro: 'I prototype AI-assisted workflows and build responsive sites with React, Next.js and TypeScript.',
+    intro: 'Claude, GPT and open-source LLMs wired into Telegram bots and websites.',
     getInTouch: 'Get in touch',
     viewWork: 'View projects',
     downloadCv: 'Download CV',
   },
-  about: { eyebrow: 'about', title: 'Who I am', paragraphs: ABOUT },
+  about: { eyebrow: 'about', title: 'Who I am', paragraphs: ABOUT, principles: [
+      ['Business first', 'I map how clients arrive and where requests get lost before writing a line of code.'],
+      ['The right model', 'Claude, GPT, Gemini or an open-source LLM — picked for the task and the budget.'],
+      ['Agents that ship', 'The agent lives in your Telegram bot or site and works every day, not just in a demo.'],
+    ] },
   services: {
     eyebrow: 'services',
     title: 'What I build',
     items: [
       {
-        title: 'Landing pages & corporate sites',
+        title: 'Websites',
         description:
-          'One-page landings and multi-page sites for restaurants, construction firms and travel agencies. Clean structure, real conversion paths.',
+          'Landing pages, corporate sites and online stores that load fast, work on every phone and turn visitors into requests.',
       },
       {
-        title: 'Online stores',
+        title: 'Telegram bots',
         description:
-          'Catalogue, cart, checkout and an admin panel to run it, connected to a real backend rather than a static mock.',
+          'Bots for orders, bookings, payments and support — with an admin panel, a database and a clean flow for the user.',
       },
       {
-        title: 'Responsive layout & animation',
-        description: 'Honest markup from 320px up, with motion that guides attention instead of decorating the page.',
-      },
-      {
-        title: 'Integrations',
+        title: 'AI agent in your Telegram bot',
         description:
-          'Lead forms, Telegram and WhatsApp, maps, payments and third-party APIs wired into the site and tested end to end.',
-      },
-      {
-        title: 'Speed & SEO',
-        description:
-          'Core Web Vitals, semantic markup, meta tags and structured data, so the site is found and does not keep people waiting.',
-      },
-      {
-        title: 'Admin panels',
-        description: 'A place for the client to edit content, products and orders without calling a developer.',
+          'An AI agent talks to clients like a manager and fills in the request form with them — the moment a request is submitted, you get a Telegram notification with all the details.',
       },
     ],
+    funnel: {
+      title: 'How the AI agent turns a chat into a request',
+      note: 'Illustrative example: out of 1,000 visitors',
+      stages: ['Visitors', 'Talked to the agent', 'Filled the form', 'You got it in Telegram'],
+    },
   },
+  carousel: { prev: 'Previous', next: 'Next' },
   skills: {
-    eyebrow: 'toolbox',
-    title: 'Skills & stack',
-    groupTitles: SKILLS.map((g) => g.title),
+    eyebrow: 'models & stack',
+    title: 'AI toolkit',
+    groupTitles: ['AI & LLM', 'Bots & Backend', 'Web'],
   },
+  quizCards: [
+    ['Your business', 'Niche, clients and how requests come in today'],
+    ['Where AI fits', 'Which routine tasks an agent can take over'],
+    ['Plan & cost', 'Bot, site or agent — and a rough budget'],
+  ],
   projects: {
     eyebrow: 'selected work',
     title: 'Projects',
@@ -294,13 +299,13 @@ const en: Dict = {
 
 const uz: Dict = {
   meta: {
-    title: `${SITE.name} — Toshkentdagi Frontend dasturchi`,
-    description: `${SITE.name} — Toshkentdagi web dasturchi va AI agent prototiplovchi. Biznes uchun AI agentlar, integratsiyalar va saytlar.`,
+    title: `${SITE.name} — Toshkentda biznes uchun AI agentlar`,
+    description: `${SITE.name} — Toshkentdagi AI agent dasturchi. Biznes uchun AI agentlar, Telegram botlar va saytlar.`,
     ogLocale: 'uz_UZ',
   },
-  role: 'AI agent prototiplash va web dasturlash',
-  subRole: 'Frontend dasturchi · full stack tomon rivojlanyapman',
-  tagline: 'Biznes jarayonlari uchun amaliy AI agentlar va web yechimlar prototipini yarataman.',
+  role: 'Biznes uchun AI agentlar',
+  subRole: 'AI agent dasturchi · Telegram botlar · saytlar',
+  tagline: 'Biznesdan kundalik ishni oladigan AI agentlar, Telegram botlar va saytlar yarataman.',
   location: "Toshkent, O'zbekiston",
   skipToContent: "Kontentga o'tish",
   nav: [
@@ -313,9 +318,9 @@ const uz: Dict = {
   ],
   hero: {
     available: 'Frilans va masofaviy ishlar uchun ochiqman',
-    headline: 'Biznes jarayonlarini soddalashtiradigan AI agentlar va web yechimlar.',
+    headline: 'Mijozlarga javob beradigan, arizalarni ushlaydigan va kundalik ishni bajaradigan AI agentlar — siz esa biznes bilan shug\'ullanasiz.',
     auditCta: 'AI tahlilni boshlash',
-    intro: "AI yordamidagi ish jarayonlarini prototiplayman va React, Next.js hamda TypeScript'da saytlar quraman.",
+    intro: 'Claude, GPT va open-source LLM\'lar Telegram botlar va saytlarga ulanadi.',
     getInTouch: "Bog'lanish",
     viewWork: "Loyihalarni ko'rish",
     downloadCv: 'CV yuklab olish',
@@ -324,10 +329,15 @@ const uz: Dict = {
     eyebrow: 'men haqimda',
     title: 'Men kimman',
     paragraphs: [
-      "Men Kamron Fazilovman — Toshkentdagi frontend dasturchi. Biznes uchun zamonaviy, tez va moslashuvchan saytlar quraman: landing, korporativ saytlar, onlayn do'konlar va admin panellar.",
-      "React, Next.js va TypeScript bilan ishlayman va odatda e'tibordan chetda qoladigan narsalarga ahamiyat beraman: sayt tez ochilishi, har qanday telefonda ishlashi va mijozga haqiqiy murojaat keltirishi kerak.",
-      "Backend'ni o'rganyapman va full stack tomon ketyapman, shuning uchun stekimda frontend vositalari yonida Node.js, Express, Prisma va PostgreSQL bor.",
-      "Dasturlashdan tashqari mijozlarni o'zim topaman, ishimni sotaman va shaxsiy brendimni rivojlantiraman. Maqsadim: kuchli full stack dasturchi bo'lish, o'z IT kompaniyamni ochish va xalqaro mijozlar bilan ishlash.",
+      'Men Kamron Fazilov, Toshkentdanman. Biznes uchun AI agentlar yarataman: mijozlarga javob beradigan, arizalarni saralaydigan va Telegram hamda saytlarda kundalik ishni bajaradigan yordamchilar.',
+      'Koddan emas, biznesdan boshlayman: mijozlar qanday keladi, arizalar qayerda yo\'qoladi va jamoaning vaqtini qaysi vazifalar oladi. Keyin haqiqatan mos model va vositani tanlayman — Claude, GPT, Gemini yoki open-source LLM.',
+      'Har kuni Claude Code va Codex bilan ishlayman, Node.js, Python, Next.js va Telegram Bot API\'da ishga tushiraman — agent demoda qolmay, haqiqiy mahsulotga aylanadi.',
+      'Maqsadim — O\'zbekiston va xorijdagi bizneslarga AI\'dan maksimal foyda olishga yordam berish va o\'z AI studiyamni qurish.',
+    ],
+    principles: [
+      ['Avval biznes', 'Kod yozishdan oldin mijozlar qanday kelishi va arizalar qayerda yo\'qolishini aniqlayman.'],
+      ['To\'g\'ri model', 'Claude, GPT, Gemini yoki open-source LLM — vazifa va byudjetga qarab tanlanadi.'],
+      ['Ishlaydigan agentlar', 'Agent Telegram botingiz yoki saytingizda har kuni ishlaydi, faqat demoda emas.'],
     ],
   },
   services: {
@@ -335,41 +345,38 @@ const uz: Dict = {
     title: 'Nimalarni quraman',
     items: [
       {
-        title: 'Landing va korporativ saytlar',
+        title: 'Saytlar',
         description:
-          "Restoran, qurilish va turizm kompaniyalari uchun bir sahifali landing hamda ko'p sahifali saytlar. Aniq tuzilma va real murojaat yo'llari.",
+          'Tez ochiladigan, har qanday telefonda ishlaydigan va tashrifchini arizaga aylantiradigan landing, korporativ saytlar va onlayn do\'konlar.',
       },
       {
-        title: "Onlayn do'konlar",
+        title: 'Telegram botlar',
         description:
-          "Katalog, savat, buyurtma va uni boshqaradigan admin panel. Statik maket emas, haqiqiy backend bilan bog'langan holda.",
+          'Buyurtma, bron, to\'lov va qo\'llab-quvvatlash uchun botlar — admin panel, ma\'lumotlar bazasi va foydalanuvchi uchun qulay jarayon bilan.',
       },
       {
-        title: 'Moslashuvchan verstka va animatsiya',
+        title: 'Telegram botga AI agent',
         description:
-          "320px'dan boshlab toza verstka. Animatsiya bezak uchun emas, e'tiborni yo'naltirish uchun ishlaydi.",
-      },
-      {
-        title: 'Integratsiyalar',
-        description:
-          "Ariza formalari, Telegram va WhatsApp, xaritalar, to'lov va tashqi API'lar: saytga ulanadi va to'liq tekshiriladi.",
-      },
-      {
-        title: 'Tezlik va SEO',
-        description:
-          "Core Web Vitals, semantik verstka, meta teglar va tuzilgan ma'lumotlar: sayt topiladi va kutdirmaydi.",
-      },
-      {
-        title: 'Admin panellar',
-        description: "Mijoz dasturchiga murojaat qilmasdan kontent, mahsulot va buyurtmalarni tahrirlaydigan joy.",
+          'AI agent mijoz bilan menejer kabi gaplashadi va u bilan birga ariza formasini to\'ldiradi — ariza yuborilishi bilan sizga Telegram\'da barcha ma\'lumotlar bilan xabar keladi.',
       },
     ],
+    funnel: {
+      title: 'AI agent suhbatni qanday arizaga aylantiradi',
+      note: 'Taxminiy misol: 1 000 tashrifchidan',
+      stages: ['Tashrifchilar', 'Agent bilan gaplashdi', 'Formani to\'ldirdi', 'Sizga Telegram\'da keldi'],
+    },
   },
+  carousel: { prev: 'Oldingi', next: 'Keyingi' },
   skills: {
-    eyebrow: 'asboblar',
-    title: "Ko'nikmalar va stek",
-    groupTitles: ['Frontend', "Backend va ma'lumotlar", 'Vositalar va bulut'],
+    eyebrow: 'modellar va stek',
+    title: 'AI asboblari',
+    groupTitles: ['AI va LLM', 'Botlar va backend', 'Web'],
   },
+  quizCards: [
+    ['Biznesingiz', 'Soha, mijozlar va arizalar hozir qanday kelishi'],
+    ['AI qayerda kerak', 'Qaysi kundalik ishlarni agent o\'z zimmasiga oladi'],
+    ['Reja va narx', 'Bot, sayt yoki agent — va taxminiy byudjet'],
+  ],
   projects: {
     eyebrow: 'tanlangan ishlar',
     title: 'Loyihalar',
@@ -539,14 +546,14 @@ const uz: Dict = {
 
 const ru: Dict = {
   meta: {
-    title: `Камрон Фазилов (${SITE.name}) — Frontend-разработчик в Ташкенте`,
+    title: `Камрон Фазилов (${SITE.name}) — ИИ-агенты для бизнеса в Ташкенте`,
     description:
-      'Камрон Фазилов — веб-разработчик и создатель прототипов ИИ-агентов в Ташкенте. ИИ-агенты, интеграции и сайты для бизнеса.',
+      'Камрон Фазилов — разработчик ИИ-агентов в Ташкенте. ИИ-агенты, Telegram-боты и сайты для бизнеса на Claude, GPT и open-source LLM.',
     ogLocale: 'ru_RU',
   },
-  role: 'Прототипирование ИИ-агентов и веб-разработка',
-  subRole: 'Frontend-разработчик · развиваюсь в Full Stack',
-  tagline: 'Создаю прототипы практичных ИИ-агентов и веб-решения для бизнеса.',
+  role: 'ИИ-агенты для бизнеса',
+  subRole: 'Разработчик ИИ-агентов · Telegram-боты · сайты',
+  tagline: 'Создаю ИИ-агентов, Telegram-ботов и сайты, которые снимают с бизнеса рутину.',
   location: 'Ташкент, Узбекистан',
   skipToContent: 'К содержимому',
   nav: [
@@ -559,9 +566,9 @@ const ru: Dict = {
   ],
   hero: {
     available: 'Открыт к фрилансу и удалённой работе',
-    headline: 'ИИ-агенты и веб-инструменты, упрощающие бизнес-процессы.',
+    headline: 'ИИ-агенты, которые отвечают клиентам, ловят заявки и делают рутину — пока вы занимаетесь бизнесом.',
     auditCta: 'Начать ИИ-аудит',
-    intro: 'Прототипирую процессы с ИИ и создаю адаптивные сайты на React, Next.js и TypeScript.',
+    intro: 'Claude, GPT и open-source LLM, встроенные в Telegram-ботов и сайты.',
     getInTouch: 'Связаться',
     viewWork: 'Смотреть проекты',
     downloadCv: 'Скачать CV',
@@ -570,10 +577,15 @@ const ru: Dict = {
     eyebrow: 'обо мне',
     title: 'Кто я',
     paragraphs: [
-      'Я Камрон Фазилов — frontend-разработчик из Ташкента. Делаю современные, быстрые и адаптивные сайты для бизнеса: лендинги, корпоративные сайты, интернет-магазины и админ-панели.',
-      'Работаю с React, Next.js и TypeScript и слежу за тем, что обычно пропускают: сайт должен быстро грузиться, работать на любом телефоне и приносить клиенту реальные заявки.',
-      'Изучаю бэкенд и двигаюсь в сторону full stack, поэтому рядом с фронтенд-инструментами в моём стеке Node.js, Express, Prisma и PostgreSQL.',
-      'Помимо разработки сам ищу клиентов, продаю свою работу и развиваю личный бренд. Цель: стать сильным full stack разработчиком, открыть свою IT-компанию и работать с международными клиентами.',
+      'Я Камрон Фазилов из Ташкента. Создаю ИИ-агентов для бизнеса: ассистентов, которые отвечают клиентам, квалифицируют заявки и берут на себя рутину в Telegram и на сайтах.',
+      'Начинаю с бизнеса, а не с кода: как приходят клиенты, где теряются заявки и какие задачи съедают время команды. Затем подбираю модель и инструмент, которые реально подходят, — Claude, GPT, Gemini или open-source LLM.',
+      'Каждый день работаю с Claude Code и Codex, а в прод выкатываю на Node.js, Python, Next.js и Telegram Bot API — агент попадает в реальный продукт, а не остаётся демкой.',
+      'Моя цель — помочь бизнесу в Узбекистане и за его пределами взять от ИИ максимум и вырасти в собственную ИИ-студию.',
+    ],
+    principles: [
+      ['Сначала бизнес', 'До первой строки кода разбираюсь, откуда приходят клиенты и где теряются заявки.'],
+      ['Правильная модель', 'Claude, GPT, Gemini или open-source LLM — под задачу и бюджет.'],
+      ['Агенты в работе', 'Агент живёт в вашем Telegram-боте или на сайте и работает каждый день, а не только в демо.'],
     ],
   },
   services: {
@@ -581,40 +593,38 @@ const ru: Dict = {
     title: 'Что я делаю',
     items: [
       {
-        title: 'Лендинги и корпоративные сайты',
+        title: 'Сайты',
         description:
-          'Одностраничные лендинги и многостраничные сайты для ресторанов, строительных и туристических компаний. Понятная структура и реальные пути до заявки.',
+          'Лендинги, корпоративные сайты и интернет-магазины, которые быстро грузятся, работают на любом телефоне и превращают посетителей в заявки.',
       },
       {
-        title: 'Интернет-магазины',
+        title: 'Telegram-боты',
         description:
-          'Каталог, корзина, оформление заказа и админ-панель для управления, подключённые к настоящему бэкенду, а не к статичному макету.',
+          'Боты для заказов, записи, оплаты и поддержки — с админ-панелью, базой данных и понятным сценарием для пользователя.',
       },
       {
-        title: 'Адаптивная вёрстка и анимации',
-        description: 'Честная вёрстка начиная с 320px. Анимация ведёт внимание, а не украшает страницу.',
-      },
-      {
-        title: 'Интеграции',
+        title: 'ИИ-агент в Telegram-боте',
         description:
-          'Формы заявок, Telegram и WhatsApp, карты, оплата и сторонние API: подключаю к сайту и проверяю целиком.',
-      },
-      {
-        title: 'Скорость и SEO',
-        description:
-          'Core Web Vitals, семантическая вёрстка, мета-теги и структурированные данные: сайт находят, и он не заставляет ждать.',
-      },
-      {
-        title: 'Админ-панели',
-        description: 'Место, где клиент сам меняет контент, товары и заказы, не вызывая разработчика.',
+          'ИИ-агент общается с клиентом как менеджер и вместе с ним заполняет форму заявки — как только заявка отправлена, вам в Telegram приходит уведомление со всеми данными.',
       },
     ],
+    funnel: {
+      title: 'Как ИИ-агент превращает переписку в заявку',
+      note: 'Условный пример: из 1 000 посетителей',
+      stages: ['Посетители', 'Пообщались с агентом', 'Заполнили форму', 'Пришло вам в Telegram'],
+    },
   },
+  carousel: { prev: 'Назад', next: 'Вперёд' },
   skills: {
-    eyebrow: 'инструменты',
-    title: 'Навыки и стек',
-    groupTitles: ['Frontend', 'Backend и данные', 'Инструменты и облако'],
+    eyebrow: 'модели и стек',
+    title: 'ИИ-инструменты',
+    groupTitles: ['ИИ и LLM', 'Боты и бэкенд', 'Веб'],
   },
+  quizCards: [
+    ['Ваш бизнес', 'Ниша, клиенты и как сейчас приходят заявки'],
+    ['Где поможет ИИ', 'Какую рутину агент может забрать на себя'],
+    ['План и цена', 'Бот, сайт или агент — и примерный бюджет'],
+  ],
   projects: {
     eyebrow: 'избранные работы',
     title: 'Проекты',

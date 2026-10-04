@@ -69,6 +69,7 @@ export default function Navbar({
 }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState('');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -76,6 +77,22 @@ export default function Navbar({
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Подсветка активного пункта — «пилюля» как на слайдах референса.
+  useEffect(() => {
+    const sections = nav
+      .map((n) => document.querySelector<HTMLElement>(n.href))
+      .filter((el): el is HTMLElement => Boolean(el));
+    if (sections.length === 0) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(`#${e.target.id}`);
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [nav]);
 
   useEffect(() => {
     if (!open) return;
@@ -94,39 +111,46 @@ export default function Navbar({
   return (
     <header
       className={`fixed inset-x-0 top-0 z-40 transition-colors duration-300 ${
-        scrolled ? 'border-b border-line bg-bg/90 backdrop-blur-md' : 'border-b border-transparent bg-bg/75'
+        scrolled ? 'bg-bg/80 backdrop-blur-md' : 'bg-transparent'
       }`}
     >
-      <nav className="wrap flex h-16 items-center justify-between" aria-label="Primary">
-        <a href="#top" className="font-mono text-sm font-bold tracking-tight text-ink">
-          <span className="text-accent">KF /</span> studio
-          <span className="animate-blink text-accent">_</span>
+      <nav className="wrap flex h-16 items-center justify-between gap-4" aria-label="Primary">
+        <a href="#top" aria-label="Kamron Fazilov" className="display-type text-[26px] leading-none text-ink">
+          K<span className="-ml-0.5 align-top text-[18px] text-accent">F</span>
         </a>
 
-        <ul className="hidden items-center gap-8 md:flex">
-          {nav.map((item) => (
-            <li key={item.href}>
-              <a href={item.href} className="font-mono text-[13px] text-muted transition-colors hover:text-ink">
-                {item.label}
-              </a>
-            </li>
-          ))}
-          <li className="flex items-center gap-6">
-            {/* Кнопка сама скрывается там, где установка невозможна или уже сделана. */}
-            <InstallPWA label={install.button} iosHint={install.iosHint} />
-            <a
-              href="#contact"
-              className="rounded-md bg-accent px-3.5 py-1.5 font-mono text-[13px] text-bg transition-colors hover:bg-accent/90"
-            >
-              {cta}
-            </a>
-          </li>
-          <li>
-            <LocaleSwitcher current={locale} />
-          </li>
+        <ul className="hidden items-center gap-1 rounded-full border border-line bg-bg/60 p-1 backdrop-blur-md lg:flex">
+          {nav.map((item) => {
+            const isActive = active === item.href;
+            return (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  aria-current={isActive ? 'true' : undefined}
+                  className={`block rounded-full px-3.5 py-1 font-sans text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors ${
+                    isActive ? 'bg-accent text-bg' : 'text-muted hover:text-ink'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
         </ul>
 
-        <div className="flex items-center gap-4 md:hidden">
+        <div className="hidden items-center gap-5 lg:flex">
+          {/* Кнопка сама скрывается там, где установка невозможна или уже сделана. */}
+          <InstallPWA label={install.button} iosHint={install.iosHint} />
+          <LocaleSwitcher current={locale} />
+          <a
+            href="#contact"
+            className="rounded-full border border-accent/60 px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.12em] text-accent transition-colors hover:bg-accent hover:text-bg"
+          >
+            {cta}
+          </a>
+        </div>
+
+        <div className="flex items-center gap-4 lg:hidden">
           <LocaleSwitcher current={locale} />
           <button
             type="button"
@@ -142,14 +166,16 @@ export default function Navbar({
       </nav>
 
       {open && (
-        <div id="mobile-nav" className="border-t border-line bg-bg/95 backdrop-blur-md md:hidden">
+        <div id="mobile-nav" className="border-t border-line bg-bg/95 backdrop-blur-md lg:hidden">
           <ul className="wrap flex flex-col gap-1 py-4">
             {nav.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-md px-2 py-2.5 font-mono text-sm text-muted transition-colors hover:bg-surface hover:text-ink"
+                  className={`block rounded-full px-4 py-2.5 font-sans text-xs font-semibold uppercase tracking-[0.14em] transition-colors ${
+                    active === item.href ? 'bg-accent text-bg' : 'text-muted hover:bg-surface hover:text-ink'
+                  }`}
                 >
                   {item.label}
                 </a>

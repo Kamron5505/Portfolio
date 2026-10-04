@@ -1,32 +1,31 @@
-import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
+import { Anton_SC, Montserrat, Oswald } from 'next/font/google';
 
 // next/font скачивает шрифты на этапе сборки и раздаёт их с собственного
-// домена: запросов к fonts.googleapis.com нет вовсе, поэтому preconnect к
-// Google не нужен — Next сам вставляет <link rel="preload"> на свои .woff2.
-//
-// display: 'swap' — текст виден сразу системным шрифтом, без «невидимого»
-// периода, который портит LCP.
+// домена. display: 'swap' — текст виден сразу системным шрифтом.
 
-// Основной текст: сайт есть на русском, без кириллического сабсета браузер
-// подставлял бы под русские абзацы системный шрифт.
-const inter = Inter({
+// Текст и мелкие подписи: Montserrat с кириллицей (сайт есть на русском).
+const montserrat = Montserrat({
   subsets: ['latin', 'cyrillic'],
-  variable: '--font-sans',
+  variable: '--font-montserrat',
   display: 'swap',
 });
 
-// Space Grotesk кириллицы не содержит вовсе — для русских заголовков в цепочке
-// font-display вторым идёт Inter (см. tailwind.config.ts).
-const spaceGrotesk = Space_Grotesk({
+// Заголовки-«постер» в стиле small caps. Кириллицы у Anton SC нет — русские
+// заголовки подхватывает Oswald (см. @theme в globals.css).
+const antonSc = Anton_SC({
+  weight: '400',
   subsets: ['latin'],
-  variable: '--font-display',
+  variable: '--font-anton',
   display: 'swap',
+  // Без автоподобранного Arial-фолбэка: иначе кириллица рисовалась бы им,
+  // а не Oswald из стека --font-display в globals.css.
+  adjustFontFallback: false,
 });
 
-const jetbrains = JetBrains_Mono({
+const oswald = Oswald({
   subsets: ['latin', 'cyrillic'],
-  variable: '--font-mono',
+  variable: '--font-oswald',
   display: 'swap',
 });
 
-export const fontVariables = `${inter.variable} ${spaceGrotesk.variable} ${jetbrains.variable}`;
+export const fontVariables = `${montserrat.variable} ${antonSc.variable} ${oswald.variable}`;

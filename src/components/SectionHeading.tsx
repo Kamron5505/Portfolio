@@ -9,8 +9,6 @@ export default function SectionHeading({
   index: string;
   eyebrow: string;
   title: string;
-  // Секции сайта выровнены влево. center нужен там, где заголовок работает
-  // подводкой к одному центральному блоку (квиз), а не меткой колонки текста.
   align?: 'left' | 'center';
 }) {
   const centered = align === 'center';
@@ -18,10 +16,10 @@ export default function SectionHeading({
   return (
     <Reveal>
       <div className={`mb-10 ${centered ? 'text-center' : ''}`}>
-        <p className="eyebrow mb-3">
-          {index} <span className="text-faint">{'//'}</span> {eyebrow}
+        <h2 className={`section-title ${centered ? 'mx-auto max-w-3xl text-balance text-3xl! sm:text-5xl!' : ''}`}>{title}</h2>
+        <p className="eyebrow mt-3">
+          <span className="text-faint">{index}</span> · {eyebrow}
         </p>
-        <h2 className={`section-title ${centered ? 'mx-auto max-w-3xl text-balance' : ''}`}>{title}</h2>
       </div>
     </Reveal>
   );

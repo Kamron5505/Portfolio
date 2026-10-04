@@ -19,10 +19,10 @@ export default function Avatar({
   const [failed, setFailed] = useState(false);
 
   return (
-    <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gradient-to-br from-surface-2 to-surface">
+    <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-linear-to-br from-surface-2 to-surface">
       <span
         aria-hidden="true"
-        className="absolute inset-0 flex items-center justify-center font-display text-7xl font-bold text-white/10"
+        className="absolute inset-0 flex items-center justify-center display-type text-7xl font-bold text-white/10"
       >
         {initials}
       </span>

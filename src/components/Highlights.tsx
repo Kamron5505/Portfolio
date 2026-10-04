@@ -2,18 +2,19 @@ import Image from 'next/image';
 import type { HighlightItem, UiText } from '@/lib/content';
 import SectionHeading from './SectionHeading';
 import Reveal from './Reveal';
+import Slide from './Slide';
 
 export default function Highlights({ ui, highlights }: { ui: UiText; highlights: HighlightItem[] }) {
   // Пусто — секцию не показываем вовсе, чтобы не зиял голый заголовок.
   if (highlights.length === 0) return null;
 
   return (
-    <section id="highlights" className="scroll-mt-24 py-24">
-      <div className="wrap">
+    <Slide id="highlights" variant="left">
+      <div className="slide-body">
         <SectionHeading index="05" eyebrow={ui.highlights.eyebrow} title={ui.highlights.title} />
 
         {/* Плитка в стиле masonry: колонки CSS, элементы не рвутся по высоте. */}
-        <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
+        <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 *:mb-4">
           {highlights.map((item, i) => (
             <Reveal key={item.id} delay={(i % 3) * 0.06}>
               <figure className="card group overflow-hidden break-inside-avoid">
@@ -54,6 +55,6 @@ export default function Highlights({ ui, highlights }: { ui: UiText; highlights:
           ))}
         </div>
       </div>
-    </section>
+    </Slide>
   );
 }

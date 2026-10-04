@@ -41,8 +41,10 @@ export type UiText = {
   skipToContent: string;
   nav: { label: string; href: string }[];
   hero: { available: string; headline: string; auditCta: string; intro: string; getInTouch: string; viewWork: string; downloadCv: string };
-  about: { eyebrow: string; title: string; paragraphs: string[] };
-  services: { eyebrow: string; title: string };
+  about: { eyebrow: string; title: string; paragraphs: string[]; principles: [string, string][] };
+  quizCards: [string, string][];
+  services: { eyebrow: string; title: string; funnel: { title: string; note: string; stages: string[] } };
+  carousel: { prev: string; next: string };
   skills: { eyebrow: string; title: string };
   projects: { eyebrow: string; title: string };
   highlights: { eyebrow: string; title: string };
@@ -137,8 +139,19 @@ const buildUi = (locale: Locale): UiText => {
     skipToContent: d.skipToContent,
     nav: d.nav.map((n) => ({ ...n })),
     hero: { ...d.hero },
-    about: { eyebrow: d.about.eyebrow, title: d.about.title, paragraphs: [...d.about.paragraphs] },
-    services: { eyebrow: d.services.eyebrow, title: d.services.title },
+    about: {
+      eyebrow: d.about.eyebrow,
+      title: d.about.title,
+      paragraphs: [...d.about.paragraphs],
+      principles: d.about.principles.map(([t, x]) => [t, x] as [string, string]),
+    },
+    quizCards: d.quizCards.map(([t, x]) => [t, x] as [string, string]),
+    services: {
+      eyebrow: d.services.eyebrow,
+      title: d.services.title,
+      funnel: { ...d.services.funnel, stages: [...d.services.funnel.stages] },
+    },
+    carousel: { ...d.carousel },
     skills: { eyebrow: d.skills.eyebrow, title: d.skills.title },
     projects: { eyebrow: d.projects.eyebrow, title: d.projects.title },
     highlights: { eyebrow: d.highlights.eyebrow, title: d.highlights.title },

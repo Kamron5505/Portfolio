@@ -323,7 +323,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
           {/* Шапка */}
           <div className="flex items-center justify-between border-b border-line bg-surface-2/60 px-4 py-3">
             <div>
-              <p className="font-display text-sm font-bold text-ink">{t.title}</p>
+              <p className="display-type text-sm font-bold text-ink">{t.title}</p>
               <p className="font-mono text-[11px] text-muted">
                 {connected ? (
                   <>
@@ -370,7 +370,7 @@ export default function ChatWidget({ locale }: { locale: Locale }) {
                     <span className="font-mono text-[10px] text-faint">{time(m.ts)}</span>
                   </div>
                   <div
-                    className={`max-w-[85%] whitespace-pre-wrap break-words rounded-xl px-3 py-2 text-sm leading-relaxed ${
+                    className={`max-w-[85%] whitespace-pre-wrap wrap-break-word rounded-xl px-3 py-2 text-sm leading-relaxed ${
                       mine
                         ? 'rounded-br-sm bg-accent/25 text-ink'
                         : m.isAdmin

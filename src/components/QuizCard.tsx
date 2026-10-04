@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FiArrowUpRight, FiRotateCcw } from 'react-icons/fi';
 import type { QuizText } from '@/lib/i18n';
 import { plural, type Locale } from '@/lib/i18n';
+import { getVisitorSessionId } from './VisitTracker';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Карточка квиза-консультации: диалог, быстрые варианты и поле ввода.
@@ -120,6 +121,8 @@ export default function QuizCard({
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           locale,
+          // Склейка заявки с визитом для вечернего отчёта (что человек смотрел).
+          sid: getVisitorSessionId(),
           answers: collected.map((value, i) => ({ question: text.questions[i].title, answer: value })),
         }),
       });
@@ -170,7 +173,7 @@ export default function QuizCard({
       <div
         ref={logRef}
         aria-live="polite"
-        className="max-h-[20rem] space-y-6 overflow-y-auto px-5 py-6 sm:max-h-[26rem] sm:px-6"
+        className="max-h-80 space-y-6 overflow-y-auto px-5 py-6 sm:max-h-104 sm:px-6"
       >
         <div>
           <AgentBadge label={text.badge} />
@@ -191,7 +194,7 @@ export default function QuizCard({
         {current && (
           <div>
             {answers.length > 0 && <AgentBadge label={text.badge} />}
-            <h3 className="font-display text-xl font-bold leading-snug tracking-tight text-ink sm:text-2xl">
+            <h3 className="display-type text-xl font-bold leading-snug tracking-tight text-ink sm:text-2xl">
               {current.title}
             </h3>
             <p className="mt-2 max-w-xl leading-relaxed text-muted">{current.hint}</p>
@@ -216,7 +219,7 @@ export default function QuizCard({
 
             {!loading && result && (
               <>
-                <h3 className="font-display text-xl font-bold leading-snug tracking-tight text-ink sm:text-2xl">
+                <h3 className="display-type text-xl font-bold leading-snug tracking-tight text-ink sm:text-2xl">
                   {text.result.title}
                 </h3>
                 {/* Модель отвечает обычным текстом; абзацы разделены пустой
@@ -238,7 +241,7 @@ export default function QuizCard({
 
             {!loading && failed && (
               <>
-                <h3 className="font-display text-xl font-bold leading-snug tracking-tight text-ink sm:text-2xl">
+                <h3 className="display-type text-xl font-bold leading-snug tracking-tight text-ink sm:text-2xl">
                   {text.done.title}
                 </h3>
                 <p className="mt-2 max-w-xl leading-relaxed text-muted">{text.result.error}</p>

@@ -18,7 +18,7 @@ export default function GlobalError({ reset }: { error: Error & { digest?: strin
         <main className="grid min-h-screen place-items-center px-5 text-center">
           <div>
             <p className="font-mono text-sm text-accent">~/500</p>
-            <h1 className="mt-3 font-display text-4xl font-bold text-ink sm:text-5xl">
+            <h1 className="mt-3 display-type text-4xl font-bold text-ink sm:text-5xl">
               Something went wrong
             </h1>
             <p className="mx-auto mt-4 max-w-sm leading-relaxed text-muted">

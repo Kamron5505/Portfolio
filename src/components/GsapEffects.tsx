@@ -3,13 +3,13 @@
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { scrollToTarget } from './SmoothScroll';
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Единственная точка подключения GSAP: интро hero, скролл-ревилы секций,
- * hover карточек проектов и плавный скролл по якорям. Компонент не рендерит
+ * Анимации на GSAP: интро hero, скролл-ревилы секций, параллакс. Плавная
+ * прокрутка и якоря живут в SmoothScroll. Компонент не рендерит
  * разметку — только вешает анимации на существующий DOM по data-атрибутам.
  *
  * Элементы до старта прячет CSS-гейт в globals.css (только при включённом JS
@@ -48,8 +48,21 @@ export default function GsapEffects() {
       }
       const heroItems = gsap.utils.toArray<HTMLElement>('[data-hero-item]');
       const intro = gsap.timeline({ defaults: { ease } });
+      // Красный «D» выезжает из левого края, фото внутри «выпрыгивает».
+      const heroD = document.querySelector<HTMLElement>('[data-hero-d]');
+      if (heroD) {
+        intro.fromTo(
+          heroD,
+          { scaleX: 0, opacity: 1, transformOrigin: 'left center' },
+          { scaleX: 1, duration: 0.9, ease: 'expo.out' },
+        );
+        const avatar = heroD.querySelector('[data-hero-avatar]');
+        if (avatar) {
+          intro.from(avatar, { scale: 0.4, rotate: -25, opacity: 0, duration: 0.8, ease: 'back.out(1.7)' }, '-=0.45');
+        }
+      }
       if (words.length) {
-        intro.from(words, { yPercent: 60, opacity: 0, duration: 0.7, stagger: 0.09 });
+        intro.from(words, { yPercent: 60, opacity: 0, duration: 0.7, stagger: 0.09 }, heroD ? '-=0.6' : 0);
       }
       if (heroItems.length) {
         intro.fromTo(
@@ -116,7 +129,7 @@ export default function GsapEffects() {
         const id = window.location.hash;
         if (id.length < 2) return;
         const target = document.querySelector(id);
-        if (target) gsap.to(window, { scrollTo: { y: target, offsetY: 88 }, duration: 0.4 });
+        if (target) scrollToTarget(target);
       }, 1300);
 
       /* 2b. Последний рубеж: если что-то всё равно осталось невидимым, но уже
@@ -133,37 +146,14 @@ export default function GsapEffects() {
         if (stuck.length) gsap.set(stuck, { opacity: 1, y: 0 });
       }, 2000);
 
-      /* 3. Hover карточек проектов: подъём + лёгкий scale на transform,
-            цветовые hover-переходы остаются на CSS. */
-      const cards = gsap.utils.toArray<HTMLElement>('#projects a.card');
-      const listeners: Array<[HTMLElement, () => void, () => void]> = [];
-      cards.forEach((card) => {
-        const lift = () =>
-          gsap.to(card, { y: -6, scale: 1.015, duration: 0.35, ease: 'power2.out' });
-        const drop = () => gsap.to(card, { y: 0, scale: 1, duration: 0.45, ease: 'power2.out' });
-        card.addEventListener('mouseenter', lift);
-        card.addEventListener('mouseleave', drop);
-        listeners.push([card, lift, drop]);
+      /* 2f. Параллакс портретов. */
+      gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
+        gsap.fromTo(
+          el,
+          { y: 40 },
+          { y: -40, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } },
+        );
       });
-
-      /* 4. Плавный скролл по внутренним якорям (навбар, CTA hero). */
-      const onClick = (e: MouseEvent) => {
-        const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
-        if (!link) return;
-        const id = link.getAttribute('href') ?? '';
-        // '#' у карточек-заглушек и '#main' (skip-link, важен фокус) не трогаем.
-        if (id.length < 2 || id === '#main') return;
-        const target = document.querySelector(id);
-        if (!target) return;
-        e.preventDefault();
-        gsap.to(window, {
-          scrollTo: { y: target, offsetY: id === '#top' ? 0 : 88 },
-          duration: 0.85,
-          ease: 'power3.inOut',
-        });
-        history.pushState(null, '', id);
-      };
-      document.addEventListener('click', onClick);
 
       return () => {
         window.clearTimeout(refreshTimer);
@@ -172,11 +162,6 @@ export default function GsapEffects() {
         ['wheel', 'touchstart', 'keydown'].forEach((evt) =>
           window.removeEventListener(evt, markScrolled),
         );
-        document.removeEventListener('click', onClick);
-        listeners.forEach(([card, lift, drop]) => {
-          card.removeEventListener('mouseenter', lift);
-          card.removeEventListener('mouseleave', drop);
-        });
       };
     });
 

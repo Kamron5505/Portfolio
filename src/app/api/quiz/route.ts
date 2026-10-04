@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { saveQuizLead } from '@/lib/analytics-store';
 import { getDict, isLocale, type Locale } from '@/lib/i18n';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -141,7 +142,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = (await req.json().catch(() => ({}))) as { locale?: unknown; answers?: unknown };
+    const body = (await req.json().catch(() => ({}))) as { locale?: unknown; answers?: unknown; sid?: unknown };
 
     const locale: Locale = typeof body.locale === 'string' && isLocale(body.locale) ? body.locale : 'en';
 
@@ -202,6 +203,11 @@ export async function POST(req: NextRequest) {
         // Лид отправляем до ответа: на serverless функция засыпает сразу после
         // возврата, и «отложенный» fetch мог бы не уйти вовсе.
         await notifyTelegram(locale, answers, text);
+        // Заявка попадает и в вечерний ИИ-отчёт; сбой хранилища квиз не ломает.
+        const sid = typeof body.sid === 'string' && /^[a-z0-9-]{8,64}$/i.test(body.sid) ? body.sid : '';
+        await saveQuizLead({ sid, locale, at: Date.now(), answers, summary: text.slice(0, 1500) }).catch((error) =>
+          console.error('[quiz] не удалось сохранить заявку для отчёта:', error),
+        );
         return NextResponse.json({ ok: true, text });
       }
       console.error(`[quiz] ${model} вернул пустой ответ`);

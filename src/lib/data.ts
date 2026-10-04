@@ -52,9 +52,9 @@ export const SITE = {
   firstName: 'Kamron',
   lastName: 'Fazilov',
   initials: 'KF',
-  role: 'AI Agent Prototyping & Web Development',
-  subRole: 'Frontend Developer · growing into full stack',
-  tagline: 'I prototype practical AI agents and build web experiences for business.',
+  role: 'AI Agents for Business',
+  subRole: 'AI agent developer · Telegram bots · websites',
+  tagline: 'I build AI agents, Telegram bots and websites that take routine work off a business.',
   location: 'Tashkent, Uzbekistan',
   email: 'kama58077@gmail.com',
   // Фото по умолчанию — лежит в public/ и коммитится в репозиторий, поэтому
@@ -71,7 +71,7 @@ export const SITE = {
 } as const;
 
 export const SOCIALS = [
-  { label: 'Telegram', handle: '@kamron.devx', url: 'https://t.me/kamron.devx', icon: 'telegram' },
+  { label: 'Telegram', handle: '@stonks_11', url: 'https://t.me/stonks_11', icon: 'telegram' },
   { label: 'GitHub', handle: 'Kamron5505', url: 'https://github.com/Kamron5505', icon: 'github' },
   {
     label: 'LinkedIn',
@@ -86,25 +86,25 @@ export const SOCIALS = [
 export const SAME_AS = SOCIALS.map((s) => s.url);
 
 export const ABOUT = [
-  "I'm Kamron Fazilov — a frontend developer from Tashkent. I build modern, fast and responsive websites for business: landing pages, corporate sites, online stores and admin panels.",
-  'I work with React, Next.js and TypeScript, and I care about the parts that are usually skipped: the site has to load quickly, work on every phone and bring the client real enquiries.',
-  "I'm learning backend and moving toward full stack, which is why Node.js, Express, Prisma and PostgreSQL sit in my stack next to the frontend tools.",
-  'Beyond development I find my own clients, sell my work and build my personal brand. My goal: become a strong full stack developer, start my own IT company and work with international clients.',
+  "I'm Kamron Fazilov from Tashkent. I build AI agents for business: assistants that answer clients, qualify leads and handle routine work inside Telegram and on websites.",
+  "I start with the business, not the code: how clients arrive, where requests get lost and which tasks eat the team's time. Then I pick the model and the tool that actually fit — Claude, GPT, Gemini or an open-source LLM.",
+  'I work with Claude Code and Codex every day, and ship with Node.js, Python, Next.js and the Telegram Bot API, so the agent ends up in a real product, not in a demo.',
+  'My goal: help businesses in Uzbekistan and abroad get the most out of AI, and grow this into my own AI studio.',
 ];
 
 export type SkillGroup = { title: string; items: string[] };
 
 export const SKILLS: SkillGroup[] = [
   {
-    title: 'Frontend',
-    items: ['HTML5', 'CSS3', 'JavaScript (ES6+)', 'TypeScript', 'React', 'Next.js', 'Vite', 'Tailwind CSS'],
+    title: 'AI & LLM',
+    items: ['Claude', 'Claude Code', 'OpenAI Codex', 'GPT', 'Gemini', 'DeepSeek', 'Ollama', 'Prompt engineering', 'Hermes Agent', 'Tool use & agents'],
   },
-  { title: 'Backend & Data', items: ['Node.js', 'Express.js', 'Prisma ORM', 'PostgreSQL', 'MongoDB', 'REST API'] },
-  { title: 'Tools & Cloud', items: ['Git / GitHub', 'VS Code', 'Figma', 'Postman', 'Vercel', 'Render', 'Railway'] },
+  { title: 'Bots & Backend', items: ['Telegram Bot API', 'Node.js', 'Python', 'PostgreSQL', 'REST API', 'Webhooks'] },
+  { title: 'Web', items: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Vercel'] },
 ];
 
 // Услуги: тексты переводятся в i18n.ts по индексу.
-export const SERVICES_COUNT = 6;
+export const SERVICES_COUNT = 3;
 
 export type Project = {
   name: string;
